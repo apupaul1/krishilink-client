@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Hand:wght@400..700&family=Fira+Sans&display=swap');
+
+@import "tailwindcss";
+
+body {
+  font-family: "Fira Sans", sans-serif;
+
+}
+
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+
+  background: #86efac;
+  opacity: 0.5;
+
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  width: 28px;
+  border-radius: 999px;
+
+  background: #16a34a;
+  opacity: 1;
+}
+.swiper-slide {
+  transition: all 0.35s ease;
+  opacity: 0.45;
+  transform: scale(0.9);
+}
+
+.swiper-slide-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.rating-star {
+  transition: all 0.3s ease;
+}
+
+/* Only active swiper slide */
+.swiper-slide-active .rating-star {
+  animation: starPop 0.6s ease forwards;
+}
+
+@keyframes starPop {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+
+  40% {
+    transform: scale(1.35) rotate(-12deg);
+    filter: drop-shadow(0 0 10px #facc15);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+}
