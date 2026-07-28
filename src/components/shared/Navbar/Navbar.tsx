@@ -58,7 +58,7 @@ const Navbar = () => {
         <div className="hidden items-center gap-4 lg:flex">
           {user ? (
             <>
-              <Badge count={2}>
+              <Badge count={1}>
                 <ShoppingCart className="cursor-pointer" />
               </Badge>
 
