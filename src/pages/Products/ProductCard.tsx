@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import { Eye, ShoppingCart } from "lucide-react";
 import type { IProduct } from "../../redux/features/product/product.types";
+import { Link } from "react-router";
 
 interface ProductCardProps {
   product: IProduct;
@@ -31,6 +32,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           alt={name}
           className="
           w-full
+          h-64
           object-cover
           transition-transform
           duration-500
@@ -119,10 +121,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Buttons */}
         <div className="grid grid-cols-2 gap-3 pt-2">
-          <Button size="large" icon={<Eye size={18} />}>
-            Details
-          </Button>
-
+          <Link to={`/products/${product._id}`}>
+            <Button size="large" icon={<Eye size={18} />} block>
+              View Details
+            </Button>
+          </Link>
           <Button type="primary" size="large" icon={<ShoppingCart size={18} />}>
             Add
           </Button>
