@@ -1,6 +1,5 @@
 import { Avatar, Badge, Button, Dropdown, message } from "antd";
 import { LayoutDashboard, LogOut, ShoppingCart, User } from "lucide-react";
-
 import NavLinks from "./NavLinks";
 import MobileDrawer from "./MobileDrawer";
 import Logo from "../Logo/Logo";
@@ -8,29 +7,32 @@ import { Link } from "react-router";
 import { useAppSelector } from "../../../redux/hooks";
 import { logoutUser } from "../../../redux/features/auth/auth.service";
 
+export const items = [
+  {
+    key: "1",
+    icon: <User size={16} />,
+    label: "Profile",
+  },
+  {
+    key: "2",
+    icon: <LayoutDashboard size={16} />,
+    label: "Dashboard",
+  },
+  {
+    type: "divider" as const,
+  },
+  {
+    key: "3",
+    icon: <LogOut size={16} />,
+    label: "Logout",
+  },
+];
+
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const cartItems = useAppSelector((state) => state.cart.items);
 
-  const items = [
-    {
-      key: "1",
-      icon: <User size={16} />,
-      label: "Profile",
-    },
-    {
-      key: "2",
-      icon: <LayoutDashboard size={16} />,
-      label: "Dashboard",
-    },
-    {
-      type: "divider" as const,
-    },
-    {
-      key: "3",
-      icon: <LogOut size={16} />,
-      label: "Logout",
-    },
-  ];
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogout = async () => {
     try {
@@ -58,9 +60,11 @@ const Navbar = () => {
         <div className="hidden items-center gap-4 lg:flex">
           {user ? (
             <>
-              <Badge count={1}>
-                <ShoppingCart className="cursor-pointer" />
-              </Badge>
+              <Link to={'/cart'}>
+                <Badge count={cartCount}>
+                  <ShoppingCart className="cursor-pointer" />
+                </Badge>
+              </Link>
 
               <Dropdown
                 menu={{

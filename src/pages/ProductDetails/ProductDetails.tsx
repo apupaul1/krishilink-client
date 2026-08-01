@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useGetSingleProductQuery } from "../../redux/features/product/productsApi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -20,10 +20,16 @@ import "swiper/css/pagination";
 import { Button } from "antd";
 import { useState } from "react";
 import { useAppDispatch } from "../../redux/hooks";
-import { addToCart } from "../../redux/features/cart/cartSlice";
+import {
+  addToCart,
+  setCheckoutItems,
+} from "../../redux/features/cart/cartSlice";
+import { mapProductToCartItem } from "../../utils/cart";
 
 const ProductDetails = () => {
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const [quantity, setQuantity] = useState(1);
 
@@ -34,6 +40,8 @@ const ProductDetails = () => {
   }
 
   const { data, isLoading, error } = useGetSingleProductQuery(id);
+
+  console.log(data);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -60,19 +68,21 @@ const ProductDetails = () => {
   const totalPrice = product.price * quantity;
 
   const handleAddToCart = () => {
-    dispatch(
-      addToCart({
-        product: {
-          productId: product._id,
-          name: product.name,
-          image: product.images[0] ?? "",
-          price: product.price,
-          unit: product.unit,
-          stock: product.stock,
-        },
-        quantity,
-      }),
-    );
+    const cartItem = mapProductToCartItem(product, quantity);
+
+    dispatch(addToCart(cartItem));
+  };
+
+  const handleBuyNow = () => {
+    if (!product.isAvailable || product.stock === 0) {
+      return;
+    }
+
+    const cartItem = mapProductToCartItem(product, quantity);
+
+    dispatch(setCheckoutItems([cartItem]));
+
+    navigate("/checkout");
   };
 
   return (
@@ -254,7 +264,7 @@ const ProductDetails = () => {
                 type="primary"
                 className="w-full p-5!"
                 onClick={handleAddToCart}
-                // disabled={!product.isAvailable}
+                disabled={!product.isAvailable}
               >
                 <ShoppingCart size={22} />
 
@@ -264,6 +274,7 @@ const ProductDetails = () => {
                 type="default"
                 className="w-full p-5!"
                 // disabled={!product.isAvailable}
+                onClick={handleBuyNow}
               >
                 Buy Now
               </Button>

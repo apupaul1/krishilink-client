@@ -6,8 +6,8 @@ const links = [
     path: "/",
   },
   {
-    name: "Crops",
-    path: "/crops",
+    name: "Products",
+    path: "/products",
   },
   {
     name: "Farmers",
@@ -21,6 +21,10 @@ const links = [
     name: "Contact",
     path: "/contact",
   },
+  {
+    name: "Add Product",
+    path: "/add-product"
+  }
 ];
 
 const NavLinks = () => {

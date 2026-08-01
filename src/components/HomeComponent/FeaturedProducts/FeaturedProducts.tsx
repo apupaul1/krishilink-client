@@ -1,11 +1,16 @@
 import { Button, Typography } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import CropCard from "./CropCard";
-import { crops } from "../../../data/crops";
+import FeaturedProductCard from "./FeaturedProductCard";
+import { useGetFeaturedProductsQuery } from "../../../redux/features/product/productsApi";
 
 const { Title, Paragraph } = Typography;
 
-const FeaturedCrops = () => {
+const FeaturedProducts = () => {
+
+  const { data } = useGetFeaturedProductsQuery();
+
+  const products = data?.data ?? [];
+
   return (
     <section className="bg-white py-10">
       <div className="mx-auto max-w-7xl px-5">
@@ -28,11 +33,8 @@ const FeaturedCrops = () => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {crops.map((crop) => (
-            <CropCard
-              key={crop.id}
-              crop={crop}
-            />
+          {products.map((product) => (
+            <FeaturedProductCard key={product._id} product={product} />
           ))}
         </div>
       </div>
@@ -40,4 +42,4 @@ const FeaturedCrops = () => {
   );
 };
 
-export default FeaturedCrops;
+export default FeaturedProducts;

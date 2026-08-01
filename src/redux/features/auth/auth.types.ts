@@ -1,7 +1,7 @@
 export interface TUser {
   uid: string;
-  email: string | null;
-  displayName: string | null;
+  email: string;
+  displayName: string;
   photoURL: string | null;
   emailVerified: boolean;
 }

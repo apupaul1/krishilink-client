@@ -7,6 +7,11 @@ import Register from "../pages/auth/Register";
 import Products from "../pages/Products/Products";
 import PrivateRoute from "./PrivateRoute";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
+import Cart from "../pages/Cart/Cart";
+import Checkout from "../pages/Checkout/Checkout";
+import AddProduct from "../pages/Farmer/AddProduct";
+import MyProducts from "../pages/Farmer/MyProducts";
+import EditProduct from "../pages/Farmer/EditProduct";
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +23,7 @@ export const router = createBrowserRouter([
         element: <Home></Home>,
       },
       {
-        path: "crops",
+        path: "products",
         element: <Products></Products>,
       },
       {
@@ -28,6 +33,46 @@ export const router = createBrowserRouter([
             <ProductDetails></ProductDetails>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <PrivateRoute>
+            {" "}
+            <Cart></Cart>{" "}
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/checkout",
+        element: (
+          <PrivateRoute>
+            {" "}
+            <Checkout></Checkout>{" "}
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/add-product",
+        element: (
+          <PrivateRoute>
+            {" "}
+            <AddProduct></AddProduct>{" "}
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/my-products",
+        element: (
+          <PrivateRoute>
+            <MyProducts></MyProducts>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "products/edit/:id",
+        element: <PrivateRoute><EditProduct></EditProduct></PrivateRoute>,
       },
     ],
   },

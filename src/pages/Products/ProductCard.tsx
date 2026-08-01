@@ -2,6 +2,9 @@ import { Button } from "antd";
 import { Eye, ShoppingCart } from "lucide-react";
 import type { IProduct } from "../../redux/features/product/product.types";
 import { Link } from "react-router";
+import { useAppDispatch } from "../../redux/hooks";
+import { addToCart } from "../../redux/features/cart/cartSlice";
+import { mapProductToCartItem } from "../../utils/cart";
 
 interface ProductCardProps {
   product: IProduct;
@@ -9,6 +12,14 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { name, category, price, unit, images, farmer, isAvailable } = product;
+
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart(mapProductToCartItem(product)),
+    );
+  };
 
   return (
     <div
@@ -126,8 +137,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
               View Details
             </Button>
           </Link>
-          <Button type="primary" size="large" icon={<ShoppingCart size={18} />}>
-            Add
+          <Button
+            type="primary"
+            size="large"
+            icon={<ShoppingCart size={18} />}
+            onClick={handleAddToCart}
+          >
+            Add to Cart
           </Button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import BecomeFarmer from "../../components/HomeComponent/becomeFarmer/BecomeFarmer";
 import Categories from "../../components/HomeComponent/Categories/Categories";
-import FeaturedCrops from "../../components/HomeComponent/FeaturedCrops/FeaturedCrops";
+import FeaturedCrops from "../../components/HomeComponent/FeaturedProducts/FeaturedProducts";
 import Hero from "../../components/HomeComponent/Hero";
 import HowItWorks from "../../components/HomeComponent/HowItWorks/HowItWorks";
 import Newsletter from "../../components/HomeComponent/newsletter/Newsletter";

@@ -8,43 +8,47 @@ export interface ICartItem {
   quantity: number;
   unit: string;
   stock: number;
+  isSelected?: boolean;
 }
 
 interface CartState {
   items: ICartItem[];
+  checkoutItems: ICartItem[];
 }
 
 const initialState: CartState = {
   items: [],
+  checkoutItems: [],
 };
 
-interface AddToCartPayload {
-  product: Omit<ICartItem, "quantity">;
-  quantity: number;
-}
+// interface AddToCartPayload {
+//   product: Omit<ICartItem, "quantity">;
+//   quantity: number;
+// }
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<AddToCartPayload>) => {
-      const { product, quantity } = action.payload;
+    addToCart: (state, action: PayloadAction<ICartItem>) => {
+      const newItem = action.payload;
 
       const existingItem = state.items.find(
-        (item) => item.productId === product.productId,
+        (item) => item.productId === newItem.productId,
       );
 
       if (existingItem) {
         existingItem.quantity = Math.min(
-          existingItem.quantity + quantity,
+          existingItem.quantity + newItem.quantity,
           existingItem.stock,
         );
-      } else {
-        state.items.push({
-          ...product,
-          quantity,
-        });
+
+        existingItem.isSelected = true;
+
+        return;
       }
+
+      state.items.push(newItem);
     },
 
     removeFromCart: (state, action: PayloadAction<string>) => {
@@ -73,8 +77,34 @@ const cartSlice = createSlice({
       }
     },
 
+    toggleSelection: (state, action: PayloadAction<string>) => {
+      const item = state.items.find(
+        (item) => item.productId === action.payload,
+      );
+
+      if (item) {
+        item.isSelected = !item.isSelected;
+      }
+    },
+
+    toggleSelectAll: (state) => {
+      const allSelected = state.items.every((item) => item.isSelected);
+
+      state.items.forEach((item) => {
+        item.isSelected = !allSelected;
+      });
+    },
+
     clearCart: (state) => {
       state.items = [];
+    },
+
+    setCheckoutItems: (state, action: PayloadAction<ICartItem[]>) => {
+      state.checkoutItems = action.payload;
+    },
+
+    clearCheckoutItems: (state) => {
+      state.checkoutItems = [];
     },
   },
 });
@@ -84,7 +114,11 @@ export const {
   removeFromCart,
   increaseQuantity,
   decreaseQuantity,
+  toggleSelection,
+  toggleSelectAll,
   clearCart,
+  setCheckoutItems,
+  clearCheckoutItems,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

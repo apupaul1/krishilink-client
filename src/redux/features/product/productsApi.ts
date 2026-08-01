@@ -13,11 +13,42 @@ interface IProductResponse {
   data: IProduct;
 }
 
+export interface ICreateProduct {
+  name: string;
+  category: string;
+  description: string;
+
+  price: number;
+  unit: "kg" | "piece" | "dozen" | "gram";
+  stock: number;
+
+  images: string[];
+
+  location: {
+    district: string;
+    area: string;
+    address: string;
+  };
+
+  farmer: {
+    name: string;
+    email: string;
+  };
+}
+
 export const productApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getProducts: build.query<IProductsResponse, void>({
-      query: () => ({
+    getProducts: build.query<IProductsResponse, string | undefined>({
+      query: (email) => ({
         url: "/products",
+        params: email ? {email} : {}
+      }),
+      providesTags: ["Product"],
+    }),
+    
+    getFeaturedProducts: build.query<IProductsResponse, void>({
+      query: () => ({
+        url: "/products/featured",
       }),
       providesTags: ["Product"],
     }),
@@ -28,7 +59,7 @@ export const productApi = baseApi.injectEndpoints({
       }),
     }),
 
-    createProduct: build.mutation({
+    createProduct: build.mutation<IProductResponse, ICreateProduct>({
       query: (body) => ({
         url: "/products",
         method: "POST",
@@ -37,7 +68,13 @@ export const productApi = baseApi.injectEndpoints({
       invalidatesTags: ["Product"],
     }),
 
-    updateProduct: build.mutation({
+    updateProduct: build.mutation<
+      IProductResponse,
+      {
+        id: string;
+        body: Partial<IProduct>;
+      }
+    >({
       query: ({ id, body }) => ({
         url: `/products/${id}`,
         method: "PATCH",
@@ -46,7 +83,7 @@ export const productApi = baseApi.injectEndpoints({
       invalidatesTags: ["Product"],
     }),
 
-    deleteProduct: build.mutation({
+    deleteProduct: build.mutation<IProductResponse, string>({
       query: (id: string) => ({
         url: `/products/${id}`,
         method: "DELETE",
@@ -58,6 +95,7 @@ export const productApi = baseApi.injectEndpoints({
 
 export const {
   useGetProductsQuery,
+  useGetFeaturedProductsQuery,
   useGetSingleProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
