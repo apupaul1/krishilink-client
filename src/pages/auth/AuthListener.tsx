@@ -10,7 +10,7 @@ export default function AuthListener() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        if (!user.email || !user.displayName) {
+        if (!user.email) {
           dispatch(setUser(null));
           dispatch(setLoading(false));
           return;
@@ -19,7 +19,7 @@ export default function AuthListener() {
           setUser({
             uid: user.uid,
             email: user.email,
-            displayName: user.displayName,
+            displayName: user.displayName ?? "",
             photoURL: user.photoURL,
             emailVerified: user.emailVerified,
           }),

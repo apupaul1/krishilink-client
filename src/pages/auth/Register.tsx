@@ -4,6 +4,7 @@ import {
   UploadOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import type { UploadFile } from "antd/es/upload/interface";
 import { Button, Form, Input, Typography, Upload } from "antd";
 import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "./SocialLogin";
@@ -12,6 +13,10 @@ import {
   updateUserProfile,
 } from "../../redux/features/auth/auth.service";
 import { message } from "antd";
+import { useCreateUserMutation } from "../../redux/features/user/userApi";
+import { uploadImage } from "../../utils/uploadImage";
+import { useState } from "react";
+
 
 const { Title, Text } = Typography;
 
@@ -19,6 +24,7 @@ export interface RegisterFormValues {
   name: string;
   email: string;
   password: string;
+  photo: UploadFile[];
 }
 
 const Register = () => {
@@ -26,16 +32,32 @@ const Register = () => {
 
   const location = useLocation();
 
+  const [createUser] = useCreateUserMutation();
+
+
+  const [loading, setLoading] = useState(false);
+
   const onFinish = async (values: RegisterFormValues) => {
+    setLoading(true);
     try {
+      const files = values.photo as UploadFile[];
+
+      const photoURL = await uploadImage(files[0].originFileObj as File);
+
       const { user } = await registerUser(values.email, values.password);
 
       await updateUserProfile({
         displayName: values.name,
-        photoURL: "",
+        photoURL,
       });
 
       await user.reload();
+
+      await createUser({
+        name: values.name,
+        email: values.email,
+        photoURL,
+      }).unwrap();
 
       message.success("Account created successfully.");
 
@@ -43,6 +65,8 @@ const Register = () => {
     } catch (error) {
       console.error(error);
       message.error("Failed to create account.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,9 +85,28 @@ const Register = () => {
 
       <Form layout="vertical" onFinish={onFinish}>
         {/* Profile Photo */}
-        <Form.Item label="Profile Photo" name="photo">
-          <Upload beforeUpload={() => false} maxCount={1}>
-            <Button icon={<UploadOutlined />}>Upload Photo</Button>
+        <Form.Item
+          label="Profile Photo"
+          name="photo"
+          valuePropName="fileList"
+          getValueFromEvent={(e) => e?.fileList}
+          rules={[
+            {
+              required: true,
+              message: "Please upload a profile photo",
+            },
+          ]}
+        >
+          <Upload
+            listType="picture-card"
+            beforeUpload={() => false}
+            maxCount={1}
+            accept="image/*"
+          >
+            <div>
+              <UploadOutlined />
+              <div style={{ marginTop: 8 }}>Upload</div>
+            </div>
           </Upload>
         </Form.Item>
 
@@ -115,6 +158,7 @@ const Register = () => {
           size="large"
           block
           className="p-10"
+          loading={loading}
         >
           Create Account
         </Button>

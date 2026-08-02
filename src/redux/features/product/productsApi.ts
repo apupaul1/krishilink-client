@@ -41,11 +41,11 @@ export const productApi = baseApi.injectEndpoints({
     getProducts: build.query<IProductsResponse, string | undefined>({
       query: (email) => ({
         url: "/products",
-        params: email ? {email} : {}
+        params: email ? { email } : {},
       }),
       providesTags: ["Product"],
     }),
-    
+
     getFeaturedProducts: build.query<IProductsResponse, void>({
       query: () => ({
         url: "/products/featured",

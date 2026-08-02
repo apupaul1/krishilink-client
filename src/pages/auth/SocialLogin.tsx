@@ -2,13 +2,23 @@ import { GoogleOutlined } from "@ant-design/icons";
 import { Button, Divider, message } from "antd";
 import { loginWithGoogle } from "../../redux/features/auth/auth.service";
 import { useLocation, useNavigate } from "react-router";
+import { useCreateUserMutation } from "../../redux/features/user/userApi";
 
 const SocialLogin = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [createUser] = useCreateUserMutation();
+
   const handleGoogleLogin = async () => {
     try {
-      await loginWithGoogle();
+      const { user } = await loginWithGoogle();
+
+      await createUser({
+        name: user.displayName!,
+        email: user.email!,
+        photoURL: user.photoURL ?? "",
+      }).unwrap();
 
       message.success("Login successful.");
 
