@@ -12,6 +12,9 @@ import Checkout from "../pages/Checkout/Checkout";
 import AddProduct from "../pages/Farmer/AddProduct";
 import MyProducts from "../pages/Farmer/MyProducts";
 import EditProduct from "../pages/Farmer/EditProduct";
+import BecomeFarmer from "../pages/Farmer/BecomeFarmer";
+import MyApplication from "../pages/Farmer/MyApplication";
+import FarmerApplications from "../pages/Admin/FarmerApplications";
 
 export const router = createBrowserRouter([
   {
@@ -72,7 +75,34 @@ export const router = createBrowserRouter([
 
       {
         path: "products/edit/:id",
-        element: <PrivateRoute><EditProduct></EditProduct></PrivateRoute>,
+        element: (
+          <PrivateRoute>
+            <EditProduct></EditProduct>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/be-a-farmer",
+        element: (
+          <PrivateRoute>
+            {" "}
+            <BecomeFarmer></BecomeFarmer>{" "}
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "my-application",
+        element: (
+          <PrivateRoute>
+            {" "}
+            <MyApplication></MyApplication>{" "}
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "farmer-applications",
+        element: <PrivateRoute> <FarmerApplications></FarmerApplications> </PrivateRoute>,
       },
     ],
   },

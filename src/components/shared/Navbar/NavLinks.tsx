@@ -24,6 +24,10 @@ const links = [
   {
     name: "Add Product",
     path: "/add-product"
+  }, 
+  {
+    name: "Be A Farmer",
+    path: "/be-a-farmer"
   }
 ];
 
