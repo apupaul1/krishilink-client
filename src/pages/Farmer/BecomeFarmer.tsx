@@ -129,7 +129,7 @@ const BecomeFarmer = () => {
               {application.status.toUpperCase()}
             </Tag>,
 
-            <Link key="view" to="/dashboard/my-application">
+            <Link key="view" to="/my-application">
               <Button type="primary">View Application</Button>
             </Link>,
 

@@ -1,8 +1,4 @@
-export type TRole =
-  | "user"
-  | "farmer"
-  | "rider"
-  | "admin";
+export type TRole = "user" | "farmer" | "rider" | "admin";
 
 export interface IUser {
   _id: string;
@@ -32,6 +28,12 @@ export interface IUserResponse {
   success: boolean;
   message: string;
   data: IUser;
+}
+
+export interface IUserRoleResponse {
+  success: boolean;
+  message: string;
+  data: TRole;
 }
 
 export interface IUsersResponse {

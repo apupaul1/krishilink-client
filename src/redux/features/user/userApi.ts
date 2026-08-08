@@ -1,5 +1,11 @@
 import { baseApi } from "../../baseApi";
-import type { ICreateUser, IUpdateUser, IUsersResponse, IUserResponse } from "./user.types";
+import type {
+  ICreateUser,
+  IUpdateUser,
+  IUsersResponse,
+  IUserResponse,
+  IUserRoleResponse,
+} from "./user.types";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -13,6 +19,13 @@ export const userApi = baseApi.injectEndpoints({
     getSingleUser: build.query<IUserResponse, string>({
       query: (email: string) => ({
         url: `/users/${email}`,
+      }),
+      providesTags: ["User"],
+    }),
+
+    getUserRole: build.query<IUserRoleResponse, string>({
+      query: (email: string) => ({
+        url: `/users/${email}/role`,
       }),
       providesTags: ["User"],
     }),
@@ -41,6 +54,18 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
+    updateUserRole: build.mutation<
+      IUserResponse,
+      { email: string; role: string }
+    >({
+      query: ({ email, role }) => ({
+        url: `/users/${email}/role`,
+        method: "PATCH",
+        body: { role },
+      }),
+      invalidatesTags: ["User"],
+    }),
+
     deleteUser: build.mutation<IUserResponse, string>({
       query: (id: string) => ({
         url: `/users/${id}`,
@@ -54,7 +79,9 @@ export const userApi = baseApi.injectEndpoints({
 export const {
   useGetUsersQuery,
   useGetSingleUserQuery,
+  useGetUserRoleQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useUpdateUserRoleMutation
 } = userApi;

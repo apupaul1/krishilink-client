@@ -9,7 +9,9 @@ const { Title } = Typography;
 const MyApplication = () => {
   const { user } = useAppSelector((state) => state.auth);
 
-  const { data, isLoading } = useGetFarmerApplicationsQuery({email: user?.email!});
+  const { data, isLoading } = useGetFarmerApplicationsQuery({
+    email: user?.email!,
+  });
 
   if (isLoading) {
     return <Spin size="large" />;
@@ -17,13 +19,17 @@ const MyApplication = () => {
 
   const application = data?.data[0];
 
+  console.log(application);
+
   if (!application) {
     return (
-      <Empty description="You haven't submitted any farmer application yet.">
-        <Link to="/dashboard/become-farmer">
-          <Button type="primary">Become Farmer</Button>
-        </Link>
-      </Empty>
+      <div className="py-20">
+        <Empty description="You haven't submitted any farmer application yet.">
+          <Link to="/be-a-farmer">
+            <Button type="primary">Become Farmer</Button>
+          </Link>
+        </Empty>
+      </div>
     );
   }
 

@@ -32,6 +32,7 @@ const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.cart.items);
 
+
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogout = async () => {

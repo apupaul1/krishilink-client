@@ -17,7 +17,7 @@ export const farmerApplicationApi = baseApi.injectEndpoints({
         url: "/farmer-applications",
         params,
       }),
-      providesTags: ["FarmerApplication"],
+      providesTags: ["Farmer"],
     }),
 
     createFarmerApplication: build.mutation<
@@ -29,7 +29,7 @@ export const farmerApplicationApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["FarmerApplication"],
+      invalidatesTags: ["Farmer"],
     }),
 
     updateFarmerApplication: build.mutation<
@@ -44,7 +44,7 @@ export const farmerApplicationApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["FarmerApplication"],
+      invalidatesTags: ["Farmer"],
     }),
 
     deleteFarmerApplication: build.mutation<IFarmerApplicationResponse, string>(
@@ -53,7 +53,7 @@ export const farmerApplicationApi = baseApi.injectEndpoints({
           url: `/farmer-applications/${id}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["FarmerApplication"],
+        invalidatesTags: ["Farmer"],
       },
     ),
   }),

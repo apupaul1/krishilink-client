@@ -1,54 +1,104 @@
 import { NavLink } from "react-router";
-
-const links = [
-  {
-    name: "Home",
-    path: "/",
-  },
-  {
-    name: "Products",
-    path: "/products",
-  },
-  {
-    name: "Farmers",
-    path: "/farmers",
-  },
-  {
-    name: "About",
-    path: "/about",
-  },
-  {
-    name: "Contact",
-    path: "/contact",
-  },
-  {
-    name: "Add Product",
-    path: "/add-product"
-  }, 
-  {
-    name: "Be A Farmer",
-    path: "/be-a-farmer"
-  }
-];
+import useRole from "../../../hooks/useRole";
+import { useAppSelector } from "../../../redux/hooks";
 
 const NavLinks = () => {
+  const { role } = useRole();
+
+  const { user } = useAppSelector((state) => state.auth);
+
+  console.log(role);
+
   return (
     <>
-      {links.map((link) => (
-        <NavLink
-          key={link.path}
-          to={link.path}
-          className={({ isActive }) =>
-            `font-medium transition ${
-              isActive
-                ? "text-green-600"
-                : "text-gray-700 hover:text-green-600"
-            }`
-          }
-        >
-          {link.name}
-        </NavLink>
-      ))}
+      <NavLink
+        to="/"
+        className={({ isActive }) =>
+          `font-medium transition ${
+            isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
+          }`
+        }
+      >
+        Home
+      </NavLink>
+
+      <NavLink
+        to="/products"
+        className={({ isActive }) =>
+          `font-medium transition ${
+            isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
+          }`
+        }
+      >
+        Products
+      </NavLink>
+
+      <NavLink
+        to="/farmers"
+        className={({ isActive }) =>
+          `font-medium transition ${
+            isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
+          }`
+        }
+      >
+        Farmers
+      </NavLink>
+
+      <NavLink
+        to="/about"
+        className={({ isActive }) =>
+          `font-medium transition ${
+            isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
+          }`
+        }
+      >
+        About
+      </NavLink>
+
+      <NavLink
+        to="/contact"
+        className={({ isActive }) =>
+          `font-medium transition ${
+            isActive ? "text-green-600" : "text-gray-700 hover:text-green-600"
+          }`
+        }
+      >
+        Contact
+      </NavLink>
+
+      {user && (
+        <>
+          <NavLink
+            to="/be-a-farmer"
+            className={({ isActive }) =>
+              `font-medium transition ${
+                isActive
+                  ? "text-green-600"
+                  : "text-gray-700 hover:text-green-600"
+              }`
+            }
+          >
+            Be A Farmer
+          </NavLink>
+        </>
+      )}
+      {user && role === "farmer" && (
+        <>
+          {" "}
+          <NavLink
+            to="/add-product"
+            className={({ isActive }) =>
+              `font-medium transition ${
+                isActive
+                  ? "text-green-600"
+                  : "text-gray-700 hover:text-green-600"
+              }`
+            }
+          >
+            Add Product
+          </NavLink>
+        </>
+      )}
     </>
   );
 };

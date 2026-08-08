@@ -19,7 +19,6 @@ const Login = () => {
   const location = useLocation();
 
   const { user } = useAppSelector((state) => state.auth);
-  
 
   console.log(location);
 
@@ -31,7 +30,11 @@ const Login = () => {
 
   const onFinish = async (values: LoginFormValues) => {
     try {
-      await loginUser(values.email, values.password);
+      const { user } = await loginUser(values.email, values.password);
+      const token = await user.getIdToken();
+
+      console.log(token);
+
       message.success("Login successful.");
     } catch (error) {
       console.error(error);

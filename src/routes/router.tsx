@@ -15,6 +15,9 @@ import EditProduct from "../pages/Farmer/EditProduct";
 import BecomeFarmer from "../pages/Farmer/BecomeFarmer";
 import MyApplication from "../pages/Farmer/MyApplication";
 import FarmerApplications from "../pages/Admin/FarmerApplications";
+import UserManagement from "../pages/Admin/UserManagement";
+import AdminRoute from "./AdminRoute";
+import FarmerRoute from "./FarmerRoute";
 
 export const router = createBrowserRouter([
   {
@@ -41,8 +44,7 @@ export const router = createBrowserRouter([
         path: "/cart",
         element: (
           <PrivateRoute>
-            {" "}
-            <Cart></Cart>{" "}
+            <Cart></Cart>
           </PrivateRoute>
         ),
       },
@@ -50,8 +52,7 @@ export const router = createBrowserRouter([
         path: "/checkout",
         element: (
           <PrivateRoute>
-            {" "}
-            <Checkout></Checkout>{" "}
+            <Checkout></Checkout>
           </PrivateRoute>
         ),
       },
@@ -59,8 +60,9 @@ export const router = createBrowserRouter([
         path: "/add-product",
         element: (
           <PrivateRoute>
-            {" "}
-            <AddProduct></AddProduct>{" "}
+            <FarmerRoute>
+              <AddProduct></AddProduct>
+            </FarmerRoute>
           </PrivateRoute>
         ),
       },
@@ -68,7 +70,9 @@ export const router = createBrowserRouter([
         path: "/my-products",
         element: (
           <PrivateRoute>
-            <MyProducts></MyProducts>
+            <FarmerRoute>
+              <MyProducts></MyProducts>
+            </FarmerRoute>
           </PrivateRoute>
         ),
       },
@@ -85,8 +89,7 @@ export const router = createBrowserRouter([
         path: "/be-a-farmer",
         element: (
           <PrivateRoute>
-            {" "}
-            <BecomeFarmer></BecomeFarmer>{" "}
+            <BecomeFarmer></BecomeFarmer>
           </PrivateRoute>
         ),
       },
@@ -94,15 +97,31 @@ export const router = createBrowserRouter([
         path: "my-application",
         element: (
           <PrivateRoute>
-            {" "}
-            <MyApplication></MyApplication>{" "}
+            <MyApplication></MyApplication>
           </PrivateRoute>
         ),
       },
 
       {
         path: "farmer-applications",
-        element: <PrivateRoute> <FarmerApplications></FarmerApplications> </PrivateRoute>,
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <FarmerApplications></FarmerApplications>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "user-management",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <UserManagement></UserManagement>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
       },
     ],
   },
