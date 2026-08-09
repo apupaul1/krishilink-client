@@ -18,6 +18,7 @@ import FarmerApplications from "../pages/Admin/FarmerApplications";
 import UserManagement from "../pages/Admin/UserManagement";
 import AdminRoute from "./AdminRoute";
 import FarmerRoute from "./FarmerRoute";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 export const router = createBrowserRouter([
   {
@@ -136,6 +137,33 @@ export const router = createBrowserRouter([
       {
         path: "register",
         element: <Register></Register>,
+      },
+    ],
+  },
+
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children: [
+      // {
+      //   index: true,
+      //   element: <DashboardHome />,
+      // },
+      // {
+      //   path: "my-products",
+      //   element: <MyProducts />,
+      // },
+      // {
+      //   path: "my-orders",
+      //   element: <MyOrders />,
+      // },
+      {
+        path: "my-application",
+        element: <MyApplication />,
+      },
+      {
+        path: "users",
+        element: <UserManagement />,
       },
     ],
   },
