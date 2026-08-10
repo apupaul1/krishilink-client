@@ -66,7 +66,7 @@ const NavLinks = () => {
         Contact
       </NavLink>
 
-      {user && (
+      {user &&  (
         <>
           <NavLink
             to="/be-a-farmer"
@@ -80,11 +80,24 @@ const NavLinks = () => {
           >
             Be A Farmer
           </NavLink>
+
+          <NavLink
+            to="/be-a-rider"
+            className={({ isActive }) =>
+              `font-medium transition ${
+                isActive
+                  ? "text-green-600"
+                  : "text-gray-700 hover:text-green-600"
+              }`
+            }
+          >
+            Be A Rider
+          </NavLink>
         </>
       )}
+
       {user && role === "farmer" && (
         <>
-          {" "}
           <NavLink
             to="/add-product"
             className={({ isActive }) =>

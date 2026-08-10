@@ -9,35 +9,32 @@ import {
   Tag,
   Typography,
 } from "antd";
-import type { IFarmerApplication } from "../../redux/features/farmerApplication/farmerApplication.types";
 import { useState } from "react";
-import {
-  useGetFarmerApplicationsQuery,
-  useUpdateFarmerApplicationMutation,
-} from "../../redux/features/farmerApplication/farmerApplicationApi";
+import { useGetRidersQuery, useUpdateRiderMutation } from "../../redux/features/rider/riderApi";
+import type { IRider } from "../../redux/features/rider/rider.types";
 
 const { Title, Paragraph } = Typography;
 
-const FarmerApplications = () => {
-  const { data, isLoading } = useGetFarmerApplicationsQuery({
+const ApproveRider = () => {
+  const { data, isLoading } = useGetRidersQuery({
     status: "pending",
   });
 
-  const [updateApplication] = useUpdateFarmerApplicationMutation();
+  const [updateRider] = useUpdateRiderMutation();
 
   const [selectedApplication, setSelectedApplication] =
-    useState<IFarmerApplication | null>(null);
+    useState<IRider | null>(null);
 
   const [open, setOpen] = useState(false);
 
-  const handleView = (application: IFarmerApplication) => {
+  const handleView = (application: IRider) => {
     setSelectedApplication(application);
     setOpen(true);
   };
 
   const handleApprove = async (id: string) => {
     try {
-      await updateApplication({
+      await updateRider({
         id,
         body: { status: "approved" },
       }).unwrap();
@@ -51,7 +48,7 @@ const FarmerApplications = () => {
 
   const handleReject = async (id: string) => {
     try {
-      await updateApplication({
+      await updateRider({
         id,
         body: { status: "rejected" },
       }).unwrap();
@@ -70,25 +67,25 @@ const FarmerApplications = () => {
       render: (photo: string) => <Avatar src={photo} size={50} />,
     },
     {
-      title: "Farmer",
+      title: "Rider",
       dataIndex: "name",
     },
     {
-      title: "Phone",
-      dataIndex: "phone",
+      title: "Email",
+      dataIndex: "email",
     },
     {
       title: "District",
       dataIndex: "district",
     },
-    {
-      title: "Farm Types",
-      render: (_: unknown, record: IFarmerApplication) =>
-        record.farmTypes.join(", "),
-    },
+    // {
+    //   title: "Farm Types",
+    //   render: (_: unknown, record: IFarmerApplication) =>
+    //     record.farmTypes.join(", "),
+    // },
     {
       title: "Status",
-      render: (_: unknown, record: IFarmerApplication) => (
+      render: (_: unknown, record: IRider) => (
         <Tag
           color={
             record.status === "approved"
@@ -104,7 +101,7 @@ const FarmerApplications = () => {
     },
     {
       title: "Action",
-      render: (_: unknown, record: IFarmerApplication) => (
+      render: (_: unknown, record: IRider) => (
         <Space>
           <Button onClick={() => handleView(record)}>View</Button>
 
@@ -129,9 +126,9 @@ const FarmerApplications = () => {
   return (
     <section className="p-6 max-w-7xl mx-auto">
       <div className="mb-8">
-        <Title level={2}>Farmer Applications</Title>
+        <Title level={2}>Pending Rider Application</Title>
 
-        <Paragraph>Review and manage all farmer applications.</Paragraph>
+        <Paragraph>Review and manage all rider applications.</Paragraph>
       </div>
 
       <Table
@@ -165,9 +162,9 @@ const FarmerApplications = () => {
             </div>
 
             <div className="space-y-3">
-              <p>
+              {/* <p>
                 <strong>Phone:</strong> {selectedApplication.phone}
-              </p>
+              </p> */}
 
               <p>
                 <strong>NID:</strong> {selectedApplication.nid}
@@ -177,27 +174,27 @@ const FarmerApplications = () => {
                 <strong>District:</strong> {selectedApplication.district}
               </p>
 
-              <p>
+              {/* <p>
                 <strong>Area:</strong> {selectedApplication.area}
-              </p>
+              </p> */}
 
               <p>
                 <strong>Address:</strong> {selectedApplication.address}
               </p>
 
-              <p>
+              {/* <p>
                 <strong>Farm Types:</strong>{" "}
                 {selectedApplication.farmTypes.join(", ")}
-              </p>
+              </p> */}
 
-              <p>
+              {/* <p>
                 <strong>Experience:</strong> {selectedApplication.experience}{" "}
                 Years
               </p>
 
               <p>
                 <strong>About:</strong> {selectedApplication.about || "-"}
-              </p>
+              </p> */}
 
               <p>
                 <strong>Status:</strong>{" "}
@@ -239,4 +236,4 @@ const FarmerApplications = () => {
   );
 };
 
-export default FarmerApplications;
+export default ApproveRider;

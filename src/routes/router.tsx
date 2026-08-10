@@ -12,13 +12,16 @@ import Checkout from "../pages/Checkout/Checkout";
 import AddProduct from "../pages/Farmer/AddProduct";
 import MyProducts from "../pages/Farmer/MyProducts";
 import EditProduct from "../pages/Farmer/EditProduct";
-import BecomeFarmer from "../pages/Farmer/BecomeFarmer";
 import MyApplication from "../pages/Farmer/MyApplication";
-import FarmerApplications from "../pages/Admin/FarmerApplications";
+import ApproveFarmer from "../pages/Admin/ApproveFarmer";
 import UserManagement from "../pages/Admin/UserManagement";
 import AdminRoute from "./AdminRoute";
 import FarmerRoute from "./FarmerRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
+import BeARider from "../pages/Rider/BeARider";
+import BeAFarmer from "../pages/Farmer/BeAFarmer";
+import ApproveRider from "../pages/Admin/ApproveRider";
+import MyRiderApplication from "../pages/Rider/MyRiderApplication";
 
 export const router = createBrowserRouter([
   {
@@ -90,7 +93,15 @@ export const router = createBrowserRouter([
         path: "/be-a-farmer",
         element: (
           <PrivateRoute>
-            <BecomeFarmer></BecomeFarmer>
+            <BeAFarmer></BeAFarmer>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/be-a-rider",
+        element: (
+          <PrivateRoute>
+            <BeARider></BeARider>
           </PrivateRoute>
         ),
       },
@@ -102,14 +113,33 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-
       {
-        path: "farmer-applications",
+        path: "rider-application",
         element: (
           <PrivateRoute>
-            <AdminRoute>
-              <FarmerApplications></FarmerApplications>
-            </AdminRoute>
+            <MyRiderApplication></MyRiderApplication>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "approve-farmer",
+        element: (
+          <PrivateRoute>
+            {/* <AdminRoute>
+            </AdminRoute> */}
+            <ApproveFarmer></ApproveFarmer>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "approve-rider",
+        element: (
+          <PrivateRoute>
+            {/* <AdminRoute>
+            </AdminRoute> */}
+            <ApproveRider></ApproveRider>
           </PrivateRoute>
         ),
       },

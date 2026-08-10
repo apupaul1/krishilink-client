@@ -66,12 +66,14 @@ interface FarmerApplicationFormValues {
   about?: string;
 }
 
-const BecomeFarmer = () => {
+const BeAFarmer = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   const { data, isLoading: applicationLoading } = useGetFarmerApplicationsQuery(
     user?.email ? { email: user.email } : skipToken,
   );
+
+  
 
   const application = data?.data?.[0];
 
@@ -343,4 +345,4 @@ const BecomeFarmer = () => {
   );
 };
 
-export default BecomeFarmer;
+export default BeAFarmer;

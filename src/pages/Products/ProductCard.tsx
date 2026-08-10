@@ -13,12 +13,12 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { name, category, price, unit, images, farmer, isAvailable } = product;
 
+  console.log(product);
+
   const dispatch = useAppDispatch();
 
   const handleAddToCart = () => {
-    dispatch(
-      addToCart(mapProductToCartItem(product)),
-    );
+    dispatch(addToCart(mapProductToCartItem(product)));
   };
 
   return (
@@ -124,9 +124,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
 
           <div>
-            <p className="text-xs text-slate-500">Farmer</p>
-
             <h4 className="font-medium text-slate-800">{farmer.name}</h4>
+
+            <p className="text-xs text-slate-500">{farmer.email}</p>
           </div>
         </div>
 

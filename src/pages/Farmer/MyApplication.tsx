@@ -84,12 +84,15 @@ const MyApplication = () => {
           {application.status === "pending" && (
             <Button danger>Withdraw Application</Button>
           )}
-          {application.status === "rejected" && (
-            <Button type="primary">Edit Application</Button>
-          )}
           {application.status === "approved" && (
             <Link to="/dashboard/my-products">
               <Button type="primary">My Products</Button>
+            </Link>
+          )}
+
+          {application.status === "rejected" && (
+            <Link to="/be-a-rider">
+              <Button type="primary">Apply Again</Button>
             </Link>
           )}
         </div>
