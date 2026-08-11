@@ -1,8 +1,94 @@
-import { Button, Empty, Form, Input, Radio, Select } from "antd";
-import { useAppSelector } from "../../redux/hooks";
-import { Link } from "react-router";
+import { Button, Empty, Form, Input, message, Radio, Select } from "antd";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { Link, useNavigate } from "react-router";
+import { useCreateOrderMutation } from "../../redux/features/order/orderApi";
+import { useEffect } from "react";
+import { clearCart } from "../../redux/features/cart/cartSlice";
+
+export interface CheckoutFormValues {
+  fullName: string;
+  phone: string;
+  district: string;
+  area: string;
+  address: string;
+  note?: string;
+  paymentMethod: "cod" | "sslcommerz";
+}
 
 const Checkout = () => {
+  const [form] = Form.useForm<CheckoutFormValues>();
+
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
+
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedAddress = localStorage.getItem("krishilink_shipping_address");
+
+    if (!savedAddress) return;
+
+    try {
+      const address = JSON.parse(savedAddress);
+
+      form.setFieldsValue({
+        fullName: address.name,
+        phone: address.phone,
+        district: address.district,
+        area: address.area,
+        address: address.address,
+        note: address.note,
+      });
+    } catch (error) {
+      console.error("Failed to load saved address:", error);
+    }
+  }, [form]);
+
+  const handlePlaceOrder = async (values: CheckoutFormValues) => {
+    try {
+
+      const shippingAddress = {
+        name: values.fullName,
+        phone: values.phone,
+        district: values.district,
+        area: values.area,
+        address: values.address,
+        note: values.note,
+      };
+
+      // Save address for next checkout
+      localStorage.setItem(
+        "krishilink_shipping_address",
+        JSON.stringify(shippingAddress),
+      );
+
+      const result = await createOrder({
+        products: checkoutItems.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+
+        shippingAddress,
+
+        paymentMethod: values.paymentMethod,
+      }).unwrap();
+
+      console.log(result);
+
+      message.success("Order placed successfully!");
+
+      // Cart clear এখানে করবে
+      dispatch(clearCart());
+
+      navigate("/dashboard/my-orders");
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to place order. Please try again.");
+    }
+  };
+
   const districtOptions = [
     { label: "Dhaka", value: "Dhaka" },
     { label: "Chattogram", value: "Chattogram" },
@@ -18,9 +104,7 @@ const Checkout = () => {
 
   // const selectedItems = cartItems.filter((item) => item.isSelected);
 
-  const checkoutItems = useAppSelector(
-  (state) => state.cart.checkoutItems
-);
+  const checkoutItems = useAppSelector((state) => state.cart.checkoutItems);
 
   const subtotal = checkoutItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -60,7 +144,12 @@ const Checkout = () => {
           <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="mb-6 text-2xl font-bold">Delivery Information</h2>
 
-            <Form layout="vertical">
+            <Form
+              layout="vertical"
+              id="checkout-form"
+              form={form}
+              onFinish={handlePlaceOrder}
+            >
               <div className="grid gap-4 md:grid-cols-2">
                 <Form.Item
                   label="Full Name"
@@ -82,10 +171,6 @@ const Checkout = () => {
                     {
                       required: true,
                       message: "Please enter your phone number",
-                    },
-                    {
-                      pattern: /^01[3-9]\d{8}$/,
-                      message: "Enter a valid Bangladeshi phone number",
                     },
                   ]}
                 >
@@ -206,7 +291,7 @@ const Checkout = () => {
                 </div>
               ))}
 
-              <hr />
+              <hr className="border-gray-300" />
 
               <div className="flex justify-between">
                 <span>Subtotal</span>
@@ -222,7 +307,7 @@ const Checkout = () => {
                 </span>
               </div>
 
-              <hr />
+              <hr className="border-gray-300" />
 
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
@@ -231,7 +316,14 @@ const Checkout = () => {
               </div>
             </div>
 
-            <Button type="primary" size="large" className="mt-8 w-full">
+            <Button
+              type="primary"
+              htmlType="submit"
+              form="checkout-form"
+              size="large"
+              className="mt-8 w-full"
+              loading={isLoading}
+            >
               Place Order
             </Button>
           </div>
