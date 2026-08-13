@@ -14,6 +14,8 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 const Cart = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
 
+  console.log(cartItems);
+
   const dispatch = useAppDispatch();
 
   const selectedItems = cartItems.filter((item) => item.isSelected);
@@ -28,7 +30,15 @@ const Cart = () => {
     0,
   );
 
-  const deliveryCharge = subtotal >= 1000 ? 0 : 60;
+  const deliveryCharge = Object.values(
+    selectedItems.reduce<Record<string, number>>((acc, item) => {
+      if (!acc[item.farmerEmail]) {
+        acc[item.farmerEmail] = item.baseDeliveryCharge;
+      }
+
+      return acc;
+    }, {}),
+  ).reduce((total, charge) => total + charge, 0);
 
   const total = subtotal + deliveryCharge;
 
@@ -179,10 +189,10 @@ const Cart = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500">Delivery</span>
+                  <span className="text-gray-500">Delivery Charge</span>
 
                   <span className="font-medium">
-                    {deliveryCharge === 0 ? "Free" : `৳ ${deliveryCharge}`}
+                    ৳ {deliveryCharge}
                   </span>
                 </div>
 

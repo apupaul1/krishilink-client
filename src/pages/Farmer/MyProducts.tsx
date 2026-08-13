@@ -1,5 +1,6 @@
 import {
   Button,
+  Empty,
   Image,
   message,
   Popconfirm,
@@ -57,6 +58,11 @@ const MyProducts = () => {
     {
       title: "Stock",
       dataIndex: "stock",
+      render: (stock: number, record) => (
+        <span>
+          {stock} {record.unit}
+        </span>
+      ),
     },
 
     {
@@ -87,7 +93,7 @@ const MyProducts = () => {
           >
             <Button
               danger
-              loading={deletingId === record._id}
+              loading={deletingId === record._id || isDeleting}
               icon={<DeleteOutlined />}
             >
               Delete
@@ -111,6 +117,29 @@ const MyProducts = () => {
       setDeletingId(null);
     }
   };
+
+  if (!data?.data?.length) {
+    return (
+      <div className="flex min-h-100 flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white px-6 py-16">
+        <Empty
+          // image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={
+            <div>
+              <p className="text-base font-medium text-gray-700">
+                No Products Here
+              </p>
+              <p className="mt-1 text-sm text-gray-400 mb-4">
+                Your placed orders will appear here.
+              </p>
+              <Link to={"/add-product"}>
+                <Button type="primary">Add Products</Button>
+              </Link>
+            </div>
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <section className="space-y-8 max-w-7xl mx-auto py-8">

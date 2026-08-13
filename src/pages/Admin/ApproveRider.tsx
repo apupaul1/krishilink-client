@@ -17,7 +17,7 @@ const { Title, Paragraph } = Typography;
 
 const ApproveRider = () => {
   const { data, isLoading } = useGetRidersQuery({
-    status: "pending",
+    // status: "pending",
   });
 
   const [updateRider] = useUpdateRiderMutation();
@@ -106,14 +106,14 @@ const ApproveRider = () => {
           <Button onClick={() => handleView(record)}>View</Button>
 
           <Popconfirm
-            title="Approve this farmer?"
+            title="Approve this rider?"
             onConfirm={() => handleApprove(record._id)}
           >
             <Button type="primary">Approve</Button>
           </Popconfirm>
 
           <Popconfirm
-            title="Reject this farmer?"
+            title="Reject this rider?"
             onConfirm={() => handleReject(record._id)}
           >
             <Button danger>Reject</Button>
@@ -142,7 +142,7 @@ const ApproveRider = () => {
       />
 
       <Drawer
-        title="Farmer Application"
+        title="Rider Application"
         open={open}
         width={500}
         onClose={() => setOpen(false)}

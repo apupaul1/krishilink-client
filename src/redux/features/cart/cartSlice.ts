@@ -8,6 +8,16 @@ export interface ICartItem {
   quantity: number;
   unit: string;
   stock: number;
+
+  farmerEmail: string;
+  baseDeliveryCharge: number;
+
+  location: {
+    district: string;
+    area: string;
+    address: string
+  }
+
   isSelected?: boolean;
 }
 

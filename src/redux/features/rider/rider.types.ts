@@ -10,6 +10,7 @@ export interface ICreateRider {
   email: string;
   photoURL: string;
   district: string;
+  area: string;
   address: string;
   drivingLicense: string;
   nid: string;

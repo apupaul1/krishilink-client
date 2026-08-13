@@ -117,6 +117,7 @@ const BeARider = () => {
     name: string;
     email: string;
     district: string;
+    area: string;
     address: string;
     drivingLicense: UploadFile[];
     nid: UploadFile[];
@@ -144,6 +145,7 @@ const BeARider = () => {
         photoURL: user?.photoURL ?? "",
 
         district: values.district,
+        area: values.area,
         address: values.address,
 
         drivingLicense,
@@ -243,6 +245,19 @@ const BeARider = () => {
                   placeholder="Select your district"
                   options={districtOptions}
                 />
+              </Form.Item>
+
+              <Form.Item
+                label="Area"
+                name="area"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select your area.",
+                  },
+                ]}
+              >
+                <Input placeholder="Select your area" />
               </Form.Item>
 
               <Form.Item

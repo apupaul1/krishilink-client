@@ -1,40 +1,5 @@
 import { baseApi } from "../../baseApi";
-import type { IProduct } from "./product.types";
-
-interface IProductsResponse {
-  success: boolean;
-  message: string;
-  data: IProduct[];
-}
-
-interface IProductResponse {
-  success: boolean;
-  message: string;
-  data: IProduct;
-}
-
-export interface ICreateProduct {
-  name: string;
-  category: string;
-  description: string;
-
-  price: number;
-  unit: "kg" | "piece" | "dozen" | "gram";
-  stock: number;
-
-  images: string[];
-
-  location: {
-    district: string;
-    area: string;
-    address: string;
-  };
-
-  farmer: {
-    name: string;
-    email: string;
-  };
-}
+import type { ICreateProduct, IProduct, IProductResponse, IProductsResponse } from "./product.types";
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (build) => ({

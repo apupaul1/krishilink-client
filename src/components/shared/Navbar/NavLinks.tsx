@@ -66,7 +66,7 @@ const NavLinks = () => {
         Contact
       </NavLink>
 
-      {user &&  (
+      {user && role !== "admin" && (
         <>
           <NavLink
             to="/be-a-farmer"
@@ -96,10 +96,10 @@ const NavLinks = () => {
         </>
       )}
 
-      {user && role === "farmer" && (
+      {user && (
         <>
           <NavLink
-            to="/add-product"
+            to="/dashboard"
             className={({ isActive }) =>
               `font-medium transition ${
                 isActive
@@ -108,7 +108,7 @@ const NavLinks = () => {
               }`
             }
           >
-            Add Product
+            Dashboard
           </NavLink>
         </>
       )}

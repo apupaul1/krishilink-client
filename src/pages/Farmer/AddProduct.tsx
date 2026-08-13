@@ -2,11 +2,11 @@ import { message } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
 import { useAppSelector } from "../../redux/hooks";
 import { uploadImage } from "../../utils/uploadImage";
-import type { IAddProductForm } from "../../redux/features/product/product.types";
-import {
-  useCreateProductMutation,
-  type ICreateProduct,
-} from "../../redux/features/product/productsApi";
+import type {
+  IAddProductForm,
+  ICreateProduct,
+} from "../../redux/features/product/product.types";
+import { useCreateProductMutation } from "../../redux/features/product/productsApi";
 import ProductForm from "../../components/shared/ProductForm/ProductForm";
 import { useNavigate } from "react-router";
 
@@ -51,7 +51,7 @@ const AddProduct = () => {
 
       message.success("Product added successfully");
 
-      navigate("/my-products");
+      navigate("/dashboard/my-products");
     } catch (error) {
       console.error(error);
       message.error("Something Went Wrong. Please Try Again");

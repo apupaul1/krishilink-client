@@ -1,16 +1,18 @@
 import {
   AppstoreOutlined,
   DashboardOutlined,
+  FileAddFilled,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ProductOutlined,
-  SettingOutlined,
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Drawer, Layout, Menu, Typography } from "antd";
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
+import { useAppSelector } from "../redux/hooks";
+import useRole from "../hooks/useRole";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -19,6 +21,10 @@ const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const { user } = useAppSelector((state) => state.auth);
+
+  const { role } = useRole();
+
   const location = useLocation();
 
   const menuItems = [
@@ -26,11 +32,6 @@ const DashboardLayout = () => {
       key: "/dashboard",
       icon: <DashboardOutlined />,
       label: <Link to="/dashboard">Dashboard</Link>,
-    },
-    {
-      key: "/dashboard/my-products",
-      icon: <ProductOutlined />,
-      label: <Link to="/dashboard/my-products">My Products</Link>,
     },
     {
       key: "/dashboard/my-orders",
@@ -42,17 +43,60 @@ const DashboardLayout = () => {
       icon: <UserOutlined />,
       label: <Link to="/dashboard/my-application">My Application</Link>,
     },
-    {
-      key: "/dashboard/users",
-      icon: <TeamOutlined />,
-      label: <Link to="/dashboard/users">User Management</Link>,
-    },
-    {
-      key: "/dashboard/settings",
-      icon: <SettingOutlined />,
-      label: <Link to="/dashboard/settings">Settings</Link>,
-    },
+
+    // {
+    //   key: "/dashboard/settings",
+    //   icon: <SettingOutlined />,
+    //   label: <Link to="/dashboard/settings">Settings</Link>,
+    // },
   ];
+
+  if (role === "admin") {
+    menuItems.push(
+      {
+        key: "/dashboard/user-management",
+        icon: <TeamOutlined />,
+        label: <Link to="/dashboard/user-management">User Management</Link>,
+      },
+      {
+        key: "/dashboard/approve-farmer",
+        icon: <TeamOutlined />,
+        label: <Link to="/dashboard/approve-farmer">Farmer Applications</Link>,
+      },
+      {
+        key: "/dashboard/approve-rider",
+        icon: <TeamOutlined />,
+        label: <Link to="/dashboard/approve-rider">Rider Applications</Link>,
+      },
+      {
+        key: "/dashboard/all-orders",
+        icon: <TeamOutlined />,
+        label: <Link to="/dashboard/all-orders">All Orders</Link>,
+      },
+    );
+  }
+
+  if (role === "farmer") {
+    menuItems.push(
+      {
+        key: "/dashboard/my-products",
+        icon: <ProductOutlined />,
+        label: <Link to="/dashboard/my-products">My Products</Link>,
+      },
+      {
+        key: "/dashboard/add-product",
+        icon: <FileAddFilled />,
+        label: <Link to="/dashboard/add-product">Add Product</Link>,
+      },
+      {
+        key: "/dashboard/pending-farmer-orders",
+        icon: <FileAddFilled />,
+        label: (
+          <Link to="/dashboard/pending-farmer-orders">Pending Orders</Link>
+        ),
+      },
+    );
+  }
 
   const sidebar = (
     <div className="flex h-full flex-col">
@@ -74,16 +118,16 @@ const DashboardLayout = () => {
       {/* Bottom Profile */}
       <div className="border-t border-gray-100 p-4">
         <div className="flex items-center gap-3">
-          <Avatar icon={<UserOutlined />} />
+          <Avatar src={user?.photoURL || undefined} icon={<UserOutlined />} />
 
           {!collapsed && (
             <div className="min-w-0">
               <Text strong className="block truncate">
-                User Name
+                {user?.displayName}
               </Text>
 
               <Text type="secondary" className="block truncate text-xs!">
-                user@example.com
+                {user?.email}
               </Text>
             </div>
           )}
@@ -158,8 +202,11 @@ const DashboardLayout = () => {
               </p>
             </div>
           </div>
-
-          <Avatar size={38} icon={<UserOutlined />} />
+          <Avatar
+            size={38}
+            src={user?.photoURL || undefined}
+            icon={<UserOutlined />}
+          />
         </Header>
 
         {/* Content */}

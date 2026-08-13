@@ -2,7 +2,7 @@ import { Button, Empty, Form, Input, message, Radio, Select } from "antd";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Link, useNavigate } from "react-router";
 import { useCreateOrderMutation } from "../../redux/features/order/orderApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { clearCart } from "../../redux/features/cart/cartSlice";
 
 export interface CheckoutFormValues {
@@ -47,7 +47,6 @@ const Checkout = () => {
 
   const handlePlaceOrder = async (values: CheckoutFormValues) => {
     try {
-
       const shippingAddress = {
         name: values.fullName,
         phone: values.phone,
@@ -106,17 +105,66 @@ const Checkout = () => {
 
   const checkoutItems = useAppSelector((state) => state.cart.checkoutItems);
 
+  console.log(checkoutItems);
+
   const subtotal = checkoutItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
 
+  const baseDeliveryCharge = Object.values(
+    checkoutItems.reduce<Record<string, number>>((acc, item) => {
+      if (!acc[item.farmerEmail]) {
+        acc[item.farmerEmail] = item.baseDeliveryCharge ?? 50;
+      }
+
+      return acc;
+    }, {}),
+  ).reduce((total, charge) => total + charge, 0);
+
+  const [deliveryCharge, setDeliveryCharge] = useState(baseDeliveryCharge);
+
+  const [isEstimatedDelivery, setIsEstimatedDelivery] = useState(true);
+
+  useEffect(() => {
+    setDeliveryCharge(baseDeliveryCharge);
+    setIsEstimatedDelivery(true);
+  }, [baseDeliveryCharge]);
+
+  const calculateDeliveryCharge = (
+    customerDistrict: string,
+    customerArea: string,
+  ) => {
+    const charge = checkoutItems.reduce<Record<string, number>>((acc, item) => {
+      const farmerKey = item.farmerEmail;
+
+      if (acc[farmerKey]) return acc;
+
+      let deliveryCharge = item.baseDeliveryCharge ?? 50;
+
+      if (
+        item.location.district === customerDistrict &&
+        item.location.area === customerArea
+      ) {
+        deliveryCharge = 50;
+      } else if (item.location.district === customerDistrict) {
+        deliveryCharge = 70;
+      } else {
+        deliveryCharge = 100;
+      }
+
+      acc[farmerKey] = deliveryCharge;
+
+      return acc;
+    }, {});
+
+    return Object.values(charge).reduce((total, charge) => total + charge, 0);
+  };
+
   const totalItems = checkoutItems.reduce(
     (sum, item) => sum + item.quantity,
     0,
   );
-
-  const deliveryCharge = subtotal >= 1000 ? 0 : 60;
 
   const total = subtotal + deliveryCharge;
 
@@ -149,6 +197,27 @@ const Checkout = () => {
               id="checkout-form"
               form={form}
               onFinish={handlePlaceOrder}
+              onValuesChange={(changedValues) => {
+                const { district, area } = changedValues;
+
+                const currentDistrict =
+                  district ?? form.getFieldValue("district");
+                const currentArea = area ?? form.getFieldValue("area");
+
+                if (!currentDistrict || !currentArea) {
+                  setDeliveryCharge(baseDeliveryCharge);
+                  setIsEstimatedDelivery(true);
+                  return;
+                }
+
+                const actualCharge = calculateDeliveryCharge(
+                  currentDistrict,
+                  currentArea,
+                );
+
+                setDeliveryCharge(actualCharge);
+                setIsEstimatedDelivery(false);
+              }}
             >
               <div className="grid gap-4 md:grid-cols-2">
                 <Form.Item
@@ -299,12 +368,18 @@ const Checkout = () => {
                 <span>৳ {subtotal.toLocaleString()}</span>
               </div>
 
-              <div className="flex justify-between">
-                <span>Delivery</span>
+              <div>
+                <div className="flex justify-between">
+                  <span>Delivery</span>
 
-                <span>
-                  {deliveryCharge === 0 ? "Free" : `৳ ${deliveryCharge}`}
-                </span>
+                  <span>৳ {deliveryCharge.toLocaleString()}</span>
+                </div>
+
+                {isEstimatedDelivery && (
+                  <p className="mt-1 text-right text-xs text-gray-400">
+                    Estimated delivery charge
+                  </p>
+                )}
               </div>
 
               <hr className="border-gray-300" />

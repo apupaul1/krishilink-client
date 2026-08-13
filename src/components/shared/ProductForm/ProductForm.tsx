@@ -9,7 +9,6 @@ import {
   Typography,
   Upload,
 } from "antd";
-// import type { UploadFile } from "antd/es/upload/interface";
 
 import { useEffect } from "react";
 import type {
@@ -96,7 +95,7 @@ const ProductForm = ({
   };
 
   return (
-    <section className="mx-auto max-w-5xl p-6">
+    <section className="mx-auto max-w-7xl p-6">
       <Card
         title={
           <Title level={2} className="p-6 text-center">

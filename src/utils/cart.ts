@@ -12,5 +12,15 @@ export const mapProductToCartItem = (
   quantity,
   unit: product.unit,
   stock: product.stock,
+
+  farmerEmail: product.farmer.email,
+  baseDeliveryCharge: product.baseDeliveryCharge,
+
+  location: {
+    district: product.location.district,
+    area: product.location.area,
+    address: product.location.district
+  },
+
   isSelected: true,
 });

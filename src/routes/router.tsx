@@ -22,6 +22,10 @@ import BeARider from "../pages/Rider/BeARider";
 import BeAFarmer from "../pages/Farmer/BeAFarmer";
 import ApproveRider from "../pages/Admin/ApproveRider";
 import MyRiderApplication from "../pages/Rider/MyRiderApplication";
+import MyOrders from "../pages/MyOrders/MyOrders";
+import DashboardHome from "../pages/Dashboard/DashboardHome";
+import FarmerOrders from "../pages/Farmer/FarmerOrders";
+import AdminOrders from "../pages/Admin/AdminOrders";
 
 export const router = createBrowserRouter([
   {
@@ -57,26 +61,6 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Checkout></Checkout>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/add-product",
-        element: (
-          <PrivateRoute>
-            <FarmerRoute>
-              <AddProduct></AddProduct>
-            </FarmerRoute>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/my-products",
-        element: (
-          <PrivateRoute>
-            <FarmerRoute>
-              <MyProducts></MyProducts>
-            </FarmerRoute>
           </PrivateRoute>
         ),
       },
@@ -121,39 +105,6 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-
-      {
-        path: "approve-farmer",
-        element: (
-          <PrivateRoute>
-            {/* <AdminRoute>
-            </AdminRoute> */}
-            <ApproveFarmer></ApproveFarmer>
-          </PrivateRoute>
-        ),
-      },
-
-      {
-        path: "approve-rider",
-        element: (
-          <PrivateRoute>
-            {/* <AdminRoute>
-            </AdminRoute> */}
-            <ApproveRider></ApproveRider>
-          </PrivateRoute>
-        ),
-      },
-
-      {
-        path: "user-management",
-        element: (
-          <PrivateRoute>
-            <AdminRoute>
-              <UserManagement></UserManagement>
-            </AdminRoute>
-          </PrivateRoute>
-        ),
-      },
     ],
   },
   {
@@ -173,28 +124,93 @@ export const router = createBrowserRouter([
 
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
-      // {
-      //   index: true,
-      //   element: <DashboardHome />,
-      // },
-      // {
-      //   path: "my-products",
-      //   element: <MyProducts />,
-      // },
-      // {
-      //   path: "my-orders",
-      //   element: <MyOrders />,
-      // },
+      {
+        index: true,
+        element: <DashboardHome></DashboardHome>,
+      },
+      {
+        path: "my-products",
+        element: (
+          <PrivateRoute>
+            <FarmerRoute>
+              <MyProducts></MyProducts>
+            </FarmerRoute>
+          </PrivateRoute>
+        ),
+      },
       {
         path: "my-application",
         element: <MyApplication />,
       },
       {
-        path: "users",
-        element: <UserManagement />,
+        path: "user-management",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <UserManagement></UserManagement>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
       },
+      {
+        path: "my-orders",
+        element: <MyOrders></MyOrders>,
+      },
+
+      {
+        path: "pending-farmer-orders",
+        element: <FarmerOrders></FarmerOrders>,
+      },
+
+      {
+        path: "add-product",
+        element: (
+          <PrivateRoute>
+            <FarmerRoute>
+              <AddProduct></AddProduct>
+            </FarmerRoute>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "approve-farmer",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <ApproveFarmer></ApproveFarmer>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "approve-rider",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <ApproveRider></ApproveRider>
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: "all-orders",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <AdminOrders></AdminOrders>
+            </AdminRoute>
+          </PrivateRoute>
+        )
+      }
     ],
   },
 ]);
