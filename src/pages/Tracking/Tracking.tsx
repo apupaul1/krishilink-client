@@ -1,8 +1,9 @@
-import { Empty, Spin, Tag, Timeline, Typography } from "antd";
-import { CheckCircle2, Clock3, Truck } from "lucide-react";
+import { Empty, Tag, Timeline, Typography } from "antd";
+import { CheckCircle2, Clock3 } from "lucide-react";
 import { useParams } from "react-router";
 
 import { useGetTrackingLogsQuery } from "../../redux/features/tracking/trackingApi";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title, Text } = Typography;
 
@@ -26,11 +27,7 @@ const Tracking = () => {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   const logs = data?.data ?? [];
@@ -52,7 +49,7 @@ const Tracking = () => {
       <div className="mx-auto max-w-4xl px-4">
         {/* Header */}
         <div className="mb-8">
-          <Title level={2} className="!mb-1">
+          <Title level={2} className="mb-1!">
             Track Your Order
           </Title>
 

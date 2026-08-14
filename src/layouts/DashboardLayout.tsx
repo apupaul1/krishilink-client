@@ -41,7 +41,15 @@ const DashboardLayout = () => {
     },
   ];
 
-  if (role !== "admin") {
+  if (role !== "admin" && role !== "farmer") {
+    menuItems.push({
+      key: "/dashboard/my-application",
+      icon: <UserOutlined />,
+      label: <Link to="/dashboard/rider-application">My Application</Link>,
+    });
+  }
+
+  if (role !== "admin" && role !== "rider") {
     menuItems.push({
       key: "/dashboard/my-application",
       icon: <UserOutlined />,

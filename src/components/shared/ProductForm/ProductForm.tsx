@@ -15,6 +15,7 @@ import type {
   IAddProductForm,
   IProduct,
 } from "../../../redux/features/product/product.types";
+import { getAreaOptions, getDistrictOptions } from "../../../utils/location";
 
 const { Title } = Typography;
 
@@ -44,17 +45,6 @@ const unitOptions = [
   { label: "Liter", value: "liter" },
 ];
 
-const districtOptions = [
-  { label: "Dhaka", value: "Dhaka" },
-  { label: "Chattogram", value: "Chattogram" },
-  { label: "Khulna", value: "Khulna" },
-  { label: "Rajshahi", value: "Rajshahi" },
-  { label: "Sylhet", value: "Sylhet" },
-  { label: "Barishal", value: "Barishal" },
-  { label: "Rangpur", value: "Rangpur" },
-  { label: "Mymensingh", value: "Mymensingh" },
-];
-
 const ProductForm = ({
   mode,
   loading,
@@ -64,6 +54,8 @@ const ProductForm = ({
   onRemoveImage,
 }: ProductFormProps) => {
   const [form] = Form.useForm();
+
+  const selectedDistrict = Form.useWatch("district", form);
 
   useEffect(() => {
     if (initialValues) {
@@ -188,7 +180,13 @@ const ProductForm = ({
                 },
               ]}
             >
-              <Select placeholder="Select district" options={districtOptions} />
+              <Select
+                placeholder="Select district"
+                options={getDistrictOptions()}
+                onChange={() => {
+                  form.setFieldValue("area", undefined);
+                }}
+              />
             </Form.Item>
 
             <Form.Item
@@ -201,7 +199,15 @@ const ProductForm = ({
                 },
               ]}
             >
-              <Input placeholder="Enter area or upazila" />
+              <Select
+                placeholder={
+                  selectedDistrict
+                    ? "Select Area / Upazila"
+                    : "Select District First"
+                }
+                disabled={!selectedDistrict}
+                options={getAreaOptions(selectedDistrict)}
+              />
             </Form.Item>
           </div>
 

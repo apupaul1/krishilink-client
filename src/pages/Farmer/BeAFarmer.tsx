@@ -8,7 +8,6 @@ import {
   message,
   Result,
   Select,
-  Spin,
   Tag,
   Typography,
 } from "antd";
@@ -20,19 +19,10 @@ import {
   useGetFarmersQuery,
 } from "../../redux/features/farmer/farmerApi";
 import useRole from "../../hooks/useRole";
+import { getAreaOptions, getDistrictOptions } from "../../utils/location";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title, Paragraph } = Typography;
-
-const districtOptions = [
-  { label: "Dhaka", value: "Dhaka" },
-  { label: "Chattogram", value: "Chattogram" },
-  { label: "Khulna", value: "Khulna" },
-  { label: "Rajshahi", value: "Rajshahi" },
-  { label: "Sylhet", value: "Sylhet" },
-  { label: "Barishal", value: "Barishal" },
-  { label: "Rangpur", value: "Rangpur" },
-  { label: "Mymensingh", value: "Mymensingh" },
-];
 
 const farmTypeOptions = [
   "Vegetables",
@@ -83,8 +73,10 @@ const BeAFarmer = () => {
 
   const [form] = Form.useForm();
 
+  const selectedDistrict = Form.useWatch("district", form);
+
   if (roleLoading || applicationLoading) {
-    return <Spin size="large" />;
+    return <Loading></Loading>
   }
 
   if (role === "farmer") {
@@ -230,10 +222,17 @@ const BeAFarmer = () => {
                 rules={[
                   {
                     required: true,
+                    message: "Please select your district",
                   },
                 ]}
               >
-                <Select options={districtOptions} />
+                <Select
+                  placeholder="Select District"
+                  options={getDistrictOptions()}
+                  onChange={() => {
+                    form.setFieldValue("area", undefined);
+                  }}
+                />
               </Form.Item>
               <Form.Item
                 label="Area / Upazila"
@@ -241,10 +240,19 @@ const BeAFarmer = () => {
                 rules={[
                   {
                     required: true,
+                    message: "Please select your area",
                   },
                 ]}
               >
-                <Input />
+                <Select
+                  placeholder={
+                    selectedDistrict
+                      ? "Select Area / Upazila"
+                      : "Select District First"
+                  }
+                  disabled={!selectedDistrict}
+                  options={getAreaOptions(selectedDistrict)}
+                />
               </Form.Item>
             </div>
 

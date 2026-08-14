@@ -5,7 +5,6 @@ import {
   Empty,
   Popconfirm,
   Space,
-  Spin,
   Table,
   Tag,
   Typography,
@@ -20,6 +19,7 @@ import {
   useUpdateOrderStatusMutation,
 } from "../../redux/features/order/orderApi";
 import { Link } from "react-router";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -215,11 +215,7 @@ const MyOrders = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spin size="large" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   if (!data?.data?.length) {

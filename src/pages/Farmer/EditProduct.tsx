@@ -1,4 +1,4 @@
-import { Form, message, Spin } from "antd";
+import { Form, message } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -14,6 +14,7 @@ import type {
 
 import { uploadImage } from "../../utils/uploadImage";
 import ProductForm from "../../components/shared/ProductForm/ProductForm";
+import Loading from "../../components/shared/Loading/Loading";
 
 const EditProduct = () => {
   
@@ -76,11 +77,7 @@ const EditProduct = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spin size="large" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   return (

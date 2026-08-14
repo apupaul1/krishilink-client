@@ -1,8 +1,9 @@
-import { Button, Card, Descriptions, Empty, Spin, Tag, Typography } from "antd";
+import { Button, Card, Descriptions, Empty, Tag, Typography } from "antd";
 import { Link } from "react-router";
 
 import { useAppSelector } from "../../redux/hooks";
 import { useGetRidersQuery } from "../../redux/features/rider/riderApi";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title } = Typography;
 
@@ -14,11 +15,7 @@ const MyRiderApplication = () => {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   const application = data?.data[0];

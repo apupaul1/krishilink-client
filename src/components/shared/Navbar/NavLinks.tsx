@@ -41,7 +41,7 @@ const NavLinks = () => {
           }`
         }
       >
-        Farmers
+        Coverage Areas
       </NavLink>
 
       <NavLink
@@ -52,7 +52,7 @@ const NavLinks = () => {
           }`
         }
       >
-        About
+        About Us
       </NavLink>
 
       <NavLink

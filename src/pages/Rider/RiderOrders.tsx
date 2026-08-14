@@ -3,7 +3,6 @@ import {
   Empty,
   message,
   Popconfirm,
-  Spin,
   Table,
   Tag,
   Typography,
@@ -16,6 +15,7 @@ import {
   useRejectRiderMutation,
   useUpdateOrderStatusMutation,
 } from "../../redux/features/order/orderApi";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title, Paragraph } = Typography;
 
@@ -182,6 +182,14 @@ const RiderOrders = () => {
     },
 
     {
+      title: "Total",
+      dataIndex: "totalAmount",
+      render: (totalAmount: number) => (
+        <p className="font-semibold">{totalAmount} TK</p>
+      ),
+    },
+
+    {
       title: "Status",
       dataIndex: "orderStatus",
       width: 180,
@@ -280,11 +288,7 @@ const RiderOrders = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-100 items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   return (

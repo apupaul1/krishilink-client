@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { useCreateOrderMutation } from "../../redux/features/order/orderApi";
 import { useEffect, useState } from "react";
 import { clearCart } from "../../redux/features/cart/cartSlice";
+import { getAreaOptions, getDistrictOptions } from "../../utils/location";
 
 export interface CheckoutFormValues {
   fullName: string;
@@ -17,6 +18,7 @@ export interface CheckoutFormValues {
 
 const Checkout = () => {
   const [form] = Form.useForm<CheckoutFormValues>();
+  const selectedDistrict = Form.useWatch("district", form);
 
   const [createOrder, { isLoading }] = useCreateOrderMutation();
 
@@ -88,16 +90,6 @@ const Checkout = () => {
     }
   };
 
-  const districtOptions = [
-    { label: "Dhaka", value: "Dhaka" },
-    { label: "Chattogram", value: "Chattogram" },
-    { label: "Khulna", value: "Khulna" },
-    { label: "Rajshahi", value: "Rajshahi" },
-    { label: "Sylhet", value: "Sylhet" },
-    { label: "Barishal", value: "Barishal" },
-    { label: "Rangpur", value: "Rangpur" },
-    { label: "Mymensingh", value: "Mymensingh" },
-  ];
 
   // const cartItems = useAppSelector((state) => state.cart.items);
 
@@ -260,8 +252,10 @@ const Checkout = () => {
                 >
                   <Select
                     size="large"
-                    placeholder="Select District"
-                    options={districtOptions}
+                    options={getDistrictOptions()}
+                    onChange={() => {
+                      form.setFieldValue("area", undefined);
+                    }}
                   />
                 </Form.Item>
 
@@ -275,7 +269,15 @@ const Checkout = () => {
                     },
                   ]}
                 >
-                  <Input size="large" placeholder="Mirpur, Savar..." />
+                  <Select
+                    placeholder={
+                      selectedDistrict
+                        ? "Select Area / Upazila"
+                        : "Select District First"
+                    }
+                    disabled={!selectedDistrict}
+                    options={getAreaOptions(selectedDistrict)}
+                  />
                 </Form.Item>
               </div>
 

@@ -3,7 +3,6 @@ import {
   Empty,
   message,
   Modal,
-  Spin,
   Table,
   Tag,
   Typography,
@@ -16,6 +15,7 @@ import {
 } from "../../redux/features/order/orderApi";
 import { useGetRidersQuery } from "../../redux/features/rider/riderApi";
 import { useState } from "react";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title, Paragraph } = Typography;
 
@@ -226,11 +226,7 @@ const AdminOrders = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-100 items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   return (
@@ -271,9 +267,7 @@ const AdminOrders = () => {
             footer={null}
           >
             {riderLoading ? (
-              <div className="flex justify-center py-8">
-                <Spin />
-              </div>
+              <Loading></Loading>
             ) : !riderData?.data?.length ? (
               <Empty description="No available riders found in this area." />
             ) : (

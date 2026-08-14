@@ -25,6 +25,7 @@ import {
   setCheckoutItems,
 } from "../../redux/features/cart/cartSlice";
 import { mapProductToCartItem } from "../../utils/cart";
+import Loading from "../../components/shared/Loading/Loading";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -44,7 +45,7 @@ const ProductDetails = () => {
   console.log(data);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading></Loading>;
   }
 
   if (error || !data?.data) {

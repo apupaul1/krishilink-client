@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router";
 import { useAppSelector } from "../redux/hooks";
+import Loading from "../components/shared/Loading/Loading";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -11,7 +12,7 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const location = useLocation();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading></Loading>;
   }
 
   if (!user) {

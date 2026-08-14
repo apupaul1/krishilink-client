@@ -29,6 +29,10 @@ import AdminOrders from "../pages/Admin/AdminOrders";
 import RiderRoute from "./RiderRoute";
 import RiderOrders from "../pages/Rider/RiderOrders";
 import Tracking from "../pages/Tracking/Tracking";
+import About from "../pages/About/About";
+import Contact from "../pages/Contact/Contact";
+import NotFound from "../pages/NotFound/NotFound";
+import Unauthorized from "../pages/Unauthorized/Unauthorized";
 
 export const router = createBrowserRouter([
   {
@@ -54,7 +58,16 @@ export const router = createBrowserRouter([
 
       {
         path: "/trackings/:trackingId",
-        element: <Tracking />,
+        element: <Tracking></Tracking>,
+      },
+
+      {
+        path: "about",
+        element: <About></About>,
+      },
+      {
+        path: "contact",
+        element: <Contact></Contact>,
       },
       {
         path: "/cart",
@@ -94,22 +107,6 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <BeARider></BeARider>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "my-application",
-        element: (
-          <PrivateRoute>
-            <MyApplication></MyApplication>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rider-application",
-        element: (
-          <PrivateRoute>
-            <MyRiderApplication></MyRiderApplication>
           </PrivateRoute>
         ),
       },
@@ -155,6 +152,14 @@ export const router = createBrowserRouter([
       {
         path: "my-application",
         element: <MyApplication />,
+      },
+      {
+        path: "rider-application",
+        element: (
+          <PrivateRoute>
+            <MyRiderApplication></MyRiderApplication>
+          </PrivateRoute>
+        ),
       },
       {
         path: "user-management",
@@ -229,5 +234,14 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound></NotFound>,
+  },
+
+  {
+    path: "/unauthorized",
+    element: <Unauthorized></Unauthorized>,
   },
 ]);

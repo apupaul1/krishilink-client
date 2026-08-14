@@ -6,7 +6,6 @@ import {
   message,
   Result,
   Select,
-  Spin,
   Tag,
   Typography,
   Upload,
@@ -22,22 +21,15 @@ import {
 } from "../../redux/features/rider/riderApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { uploadImage } from "../../utils/uploadImage";
+import { getAreaOptions, getDistrictOptions } from "../../utils/location";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title, Paragraph } = Typography;
 
-const districtOptions = [
-  { label: "Dhaka", value: "Dhaka" },
-  { label: "Chattogram", value: "Chattogram" },
-  { label: "Khulna", value: "Khulna" },
-  { label: "Rajshahi", value: "Rajshahi" },
-  { label: "Sylhet", value: "Sylhet" },
-  { label: "Barishal", value: "Barishal" },
-  { label: "Rangpur", value: "Rangpur" },
-  { label: "Mymensingh", value: "Mymensingh" },
-];
-
 const BeARider = () => {
   const [form] = Form.useForm();
+
+  const selectedDistrict = Form.useWatch("district", form);
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -51,13 +43,10 @@ const BeARider = () => {
 
   const { role, isLoading: roleLoading } = useRole();
 
-  // const [createFarmerApplication, { isLoading }] =
-  //   useCreateFarmerApplicationMutation();
-
   const navigate = useNavigate();
 
   if (roleLoading || applicationLoading) {
-    return <Spin size="large" />;
+    return <Loading></Loading>;
   }
 
   if (role === "rider") {
@@ -157,9 +146,15 @@ const BeARider = () => {
 
       form.resetFields();
     } catch (error) {
-      console.log(error);
+      const err = error as {
+        status: number;
+        data: {
+          success: boolean;
+          message: string;
+        };
+      };
 
-      message.error("Failed to submit rider application.");
+      message.error(err.data.message);
     }
   };
 
@@ -243,7 +238,10 @@ const BeARider = () => {
               >
                 <Select
                   placeholder="Select your district"
-                  options={districtOptions}
+                  options={getDistrictOptions()}
+                  onChange={() => {
+                    form.setFieldValue("area", undefined);
+                  }}
                 />
               </Form.Item>
 
@@ -257,7 +255,15 @@ const BeARider = () => {
                   },
                 ]}
               >
-                <Input placeholder="Select your area" />
+                <Select
+                  placeholder={
+                    selectedDistrict
+                      ? "Select Area / Upazila"
+                      : "Select District First"
+                  }
+                  disabled={!selectedDistrict}
+                  options={getAreaOptions(selectedDistrict)}
+                />
               </Form.Item>
 
               <Form.Item

@@ -75,7 +75,7 @@ const Navbar = () => {
                 trigger={["click"]}
               >
                 <Avatar
-                  size={45}
+                  size={35}
                   src={user.photoURL}
                   className="cursor-pointer bg-green-600"
                 ></Avatar>

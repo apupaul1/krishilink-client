@@ -1,4 +1,4 @@
-import { Button, Empty, Spin, Table, Tag, Typography } from "antd";
+import { Button, Empty, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 import { useAppSelector } from "../../redux/hooks";
@@ -6,8 +6,10 @@ import {
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "../../redux/features/order/orderApi";
+import { Link } from "react-router";
+import Loading from "../../components/shared/Loading/Loading";
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 interface IFarmerOrder {
   _id: string;
@@ -108,7 +110,11 @@ const FarmerOrders = () => {
       title: "Tracking ID",
       dataIndex: "trackingId",
       render: (trackingId: string) => (
-        <span className="font-mono text-sm font-medium">{trackingId}</span>
+        <Link to={`/trackings/${trackingId}`}>
+          <Text code className="cursor-pointer">
+            {trackingId}
+          </Text>
+        </Link>
       ),
     },
 
@@ -221,11 +227,7 @@ const FarmerOrders = () => {
   ];
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-100 items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
+    return <Loading></Loading>;
   }
 
   return (

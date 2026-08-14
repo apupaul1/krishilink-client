@@ -1,8 +1,9 @@
-import { Button, Card, Descriptions, Empty, Spin, Tag, Typography } from "antd";
+import { Button, Card, Descriptions, Empty, Tag, Typography } from "antd";
 import { Link } from "react-router";
 
 import { useAppSelector } from "../../redux/hooks";
 import { useGetFarmersQuery } from "../../redux/features/farmer/farmerApi";
+import Loading from "../../components/shared/Loading/Loading";
 
 const { Title } = Typography;
 
@@ -14,7 +15,7 @@ const MyApplication = () => {
   });
 
   if (isLoading) {
-    return <Spin size="large" />;
+    return <Loading></Loading>
   }
 
   const application = data?.data[0];

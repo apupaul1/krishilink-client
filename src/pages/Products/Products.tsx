@@ -1,22 +1,15 @@
 import { message } from "antd";
 import { useGetProductsQuery } from "../../redux/features/product/productsApi";
 import ProductCard from "./ProductCard";
+import Loading from "../../components/shared/Loading/Loading";
 
 const Products = () => {
-  const { data, isLoading, error } = useGetProductsQuery();
+  const { data, isLoading, error } = useGetProductsQuery(undefined);
 
   const products = data?.data || [];
 
   if (isLoading) {
-    return (
-      <h1 className="text-7xl text-center">
-        L
-        <span className="inline-block animate-spin text-green-500  mx-1">
-          O
-        </span>
-        ADING
-      </h1>
-    );
+    return <Loading></Loading>;
   }
 
   if (error) {

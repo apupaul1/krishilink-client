@@ -1,6 +1,6 @@
-import { Spin } from "antd";
 import useRole from "../hooks/useRole";
 import { Navigate } from "react-router";
+import Loading from "../components/shared/Loading/Loading";
 
 interface FarmerRouteProps {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ const FarmerRoute = ({ children }: FarmerRouteProps) => {
   const { role, isLoading } = useRole();
 
   if (isLoading) {
-    return <Spin size="large" />;
+    return <Loading></Loading>;
   }
 
   if (role !== "farmer") {
