@@ -6,7 +6,7 @@ interface RiderRouteProps {
   children: React.ReactNode;
 }
 
-const FarmerRoute = ({ children }: RiderRouteProps) => {
+const RiderRoute = ({ children }: RiderRouteProps) => {
   const { role, isLoading } = useRole();
 
   if (isLoading) {
@@ -20,4 +20,4 @@ const FarmerRoute = ({ children }: RiderRouteProps) => {
   return children;
 };
 
-export default FarmerRoute;
+export default RiderRoute;

@@ -17,7 +17,7 @@ const { Title, Paragraph } = Typography;
 
 const ApproveRider = () => {
   const { data, isLoading } = useGetRidersQuery({
-    // status: "pending",
+    status: "pending",
   });
 
   const [updateRider] = useUpdateRiderMutation();

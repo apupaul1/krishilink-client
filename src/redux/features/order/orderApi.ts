@@ -20,6 +20,24 @@ export const orderApi = baseApi.injectEndpoints({
       providesTags: ["Order"],
     }),
 
+    assignRider: build.mutation({
+      query: ({
+        orderId,
+        riderEmail,
+      }: {
+        orderId: string;
+        riderEmail: string;
+      }) => ({
+        url: `/orders/${orderId}/assign-rider`,
+        method: "PATCH",
+        body: {
+          riderEmail,
+        },
+      }),
+
+      invalidatesTags: ["Order"],
+    }),
+
     updateOrderStatus: build.mutation({
       query: ({ orderId, status }: { orderId: string; status: string }) => ({
         url: `/orders/${orderId}/status`,
@@ -31,6 +49,14 @@ export const orderApi = baseApi.injectEndpoints({
 
       invalidatesTags: ["Order"],
     }),
+
+    rejectRider: build.mutation({
+      query: (orderId: string) => ({
+        url: `/orders/${orderId}/reject-rider`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Order"],
+    }),
   }),
 });
 
@@ -38,4 +64,6 @@ export const {
   useCreateOrderMutation,
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
+  useAssignRiderMutation,
+  useRejectRiderMutation
 } = orderApi;

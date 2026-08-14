@@ -45,7 +45,7 @@ const MyOrders = () => {
   const handleCancelOrder = async (orderId: string) => {
     try {
       await updateOrderStatus({
-        id: orderId,
+        orderId: orderId,
         status: "cancelled",
       }).unwrap();
 
@@ -85,7 +85,7 @@ const MyOrders = () => {
       title: "Tracking ID",
       dataIndex: "trackingId",
       render: (trackingId: string) => (
-        <Link to={`/tracking/${trackingId}`}>
+        <Link to={`/trackings/${trackingId}`}>
           <Text code className="cursor-pointer">
             {trackingId}
           </Text>
@@ -112,28 +112,36 @@ const MyOrders = () => {
     },
 
     {
-      title: "Items",
-      dataIndex: "items",
-      render: (items: any[]) => (
-        <div className="space-y-1">
-          {items.map((item) => (
-            <div key={item.productId}>
-              <p className="text-sm font-medium">{item.name}</p>
+      title: "Order Details",
+      key: "orderDetails",
+      render: (_: unknown, record: any) => (
+        <div className="space-y-2">
+          {/* Items */}
+          <div className="space-y-1">
+            {record.items?.map((item: any) => (
+              <div key={item.productId} className="text-sm">
+                <span className="font-medium text-gray-800">{item.name}</span>
 
-              <p className=" text-gray-500">
-                {item.quantity} {item.unit}
-              </p>
-            </div>
-          ))}
+                <span className="ml-2 text-xs text-gray-500">
+                  ({item.quantity} {item.unit})
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Total */}
+          <div className=" text-sm">
+            <span className="text-gray-500">Total: </span>
+            <span className="font-semibold text-gray-900">
+              ৳ {record.totalAmount?.toLocaleString()}
+            </span>
+          </div>
+
+          {/* Date */}
+          <p className=" text-gray-400">
+            {new Date(record.createdAt).toLocaleString()}
+          </p>
         </div>
-      ),
-    },
-
-    {
-      title: "Total",
-      dataIndex: "totalAmount",
-      render: (amount: number) => (
-        <span className="font-semibold">৳ {amount.toLocaleString()}</span>
       ),
     },
 
@@ -169,12 +177,6 @@ const MyOrders = () => {
           {status.replaceAll("_", " ").toUpperCase()}
         </Tag>
       ),
-    },
-
-    {
-      title: "Date",
-      dataIndex: "createdAt",
-      render: (date: string) => new Date(date).toLocaleString(),
     },
 
     {

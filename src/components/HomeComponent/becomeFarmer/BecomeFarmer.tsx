@@ -4,9 +4,7 @@ import BenefitItem from "./BenefitItem";
 import Lottie from "react-lottie-player";
 import farmerLottie from "../../../assets/lotties/farmerLottie.json";
 const BecomeFarmer = () => {
-
   return (
-    
     <div
       className="
             bg-linear-to-r

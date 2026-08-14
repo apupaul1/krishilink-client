@@ -26,6 +26,9 @@ import MyOrders from "../pages/MyOrders/MyOrders";
 import DashboardHome from "../pages/Dashboard/DashboardHome";
 import FarmerOrders from "../pages/Farmer/FarmerOrders";
 import AdminOrders from "../pages/Admin/AdminOrders";
+import RiderRoute from "./RiderRoute";
+import RiderOrders from "../pages/Rider/RiderOrders";
+import Tracking from "../pages/Tracking/Tracking";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +50,11 @@ export const router = createBrowserRouter([
             <ProductDetails></ProductDetails>
           </PrivateRoute>
         ),
+      },
+
+      {
+        path: "/trackings/:trackingId",
+        element: <Tracking />,
       },
       {
         path: "/cart",
@@ -209,8 +217,17 @@ export const router = createBrowserRouter([
               <AdminOrders></AdminOrders>
             </AdminRoute>
           </PrivateRoute>
-        )
-      }
+        ),
+      },
+
+      {
+        path: "delivery-order",
+        element: (
+          <RiderRoute>
+            <RiderOrders></RiderOrders>
+          </RiderRoute>
+        ),
+      },
     ],
   },
 ]);

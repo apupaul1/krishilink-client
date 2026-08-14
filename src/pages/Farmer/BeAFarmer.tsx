@@ -16,9 +16,9 @@ import { Link, useNavigate } from "react-router";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useAppSelector } from "../../redux/hooks";
 import {
-  useCreateFarmerApplicationMutation,
-  useGetFarmerApplicationsQuery,
-} from "../../redux/features/farmerApplication/farmerApplicationApi";
+  useCreateFarmerMutation,
+  useGetFarmersQuery,
+} from "../../redux/features/farmer/farmerApi";
 import useRole from "../../hooks/useRole";
 
 const { Title, Paragraph } = Typography;
@@ -69,18 +69,15 @@ interface FarmerApplicationFormValues {
 const BeAFarmer = () => {
   const { user } = useAppSelector((state) => state.auth);
 
-  const { data, isLoading: applicationLoading } = useGetFarmerApplicationsQuery(
+  const { data, isLoading: applicationLoading } = useGetFarmersQuery(
     user?.email ? { email: user.email } : skipToken,
   );
-
-  
 
   const application = data?.data?.[0];
 
   const { role, isLoading: roleLoading } = useRole();
 
-  const [createFarmerApplication, { isLoading }] =
-    useCreateFarmerApplicationMutation();
+  const [createFarmerApplication, { isLoading }] = useCreateFarmerMutation();
 
   const navigate = useNavigate();
 
@@ -97,10 +94,7 @@ const BeAFarmer = () => {
         title="You are already a verified farmer 🌾"
         subTitle="You can now manage and sell your products."
         extra={
-          <Button
-            type="primary"
-            onClick={() => navigate("/my-products")}
-          >
+          <Button type="primary" onClick={() => navigate("/my-products")}>
             My Products
           </Button>
         }

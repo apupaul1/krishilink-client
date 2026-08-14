@@ -9,28 +9,28 @@ import {
   Tag,
   Typography,
 } from "antd";
-import type { IFarmerApplication } from "../../redux/features/farmerApplication/farmerApplication.types";
+import type { IFarmer } from "../../redux/features/farmer/farmer.types";
 import { useState } from "react";
 import {
-  useGetFarmerApplicationsQuery,
-  useUpdateFarmerApplicationMutation,
-} from "../../redux/features/farmerApplication/farmerApplicationApi";
+  useGetFarmersQuery,
+  useUpdateFarmerMutation,
+} from "../../redux/features/farmer/farmerApi";
 
 const { Title, Paragraph } = Typography;
 
 const ApproveFarmer = () => {
-  const { data, isLoading } = useGetFarmerApplicationsQuery({
+  const { data, isLoading } = useGetFarmersQuery({
     status: "pending",
   });
 
-  const [updateApplication] = useUpdateFarmerApplicationMutation();
+  const [updateApplication] = useUpdateFarmerMutation();
 
   const [selectedApplication, setSelectedApplication] =
-    useState<IFarmerApplication | null>(null);
+    useState<IFarmer | null>(null);
 
   const [open, setOpen] = useState(false);
 
-  const handleView = (application: IFarmerApplication) => {
+  const handleView = (application: IFarmer) => {
     setSelectedApplication(application);
     setOpen(true);
   };
@@ -83,12 +83,11 @@ const ApproveFarmer = () => {
     },
     {
       title: "Farm Types",
-      render: (_: unknown, record: IFarmerApplication) =>
-        record.farmTypes.join(", "),
+      render: (_: unknown, record: IFarmer) => record.farmTypes.join(", "),
     },
     {
       title: "Status",
-      render: (_: unknown, record: IFarmerApplication) => (
+      render: (_: unknown, record: IFarmer) => (
         <Tag
           color={
             record.status === "approved"
@@ -104,7 +103,7 @@ const ApproveFarmer = () => {
     },
     {
       title: "Action",
-      render: (_: unknown, record: IFarmerApplication) => (
+      render: (_: unknown, record: IFarmer) => (
         <Space>
           <Button onClick={() => handleView(record)}>View</Button>
 

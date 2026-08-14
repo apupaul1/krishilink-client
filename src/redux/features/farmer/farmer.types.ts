@@ -1,11 +1,11 @@
-export type TFarmerApplicationStatus = "pending" | "approved" | "rejected";
+export type TFarmerStatus = "pending" | "approved" | "rejected";
 
-export interface IGetFarmerApplicationQuery {
+export interface IGetFarmerQuery {
   email?: string;
   status?: string;
 }
 
-export interface IFarmerApplication {
+export interface IFarmer {
   _id: string;
 
   name: string;
@@ -25,13 +25,13 @@ export interface IFarmerApplication {
 
   about?: string;
 
-  status: TFarmerApplicationStatus;
+  status: TFarmerStatus;
 
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ICreateFarmerApplication {
+export interface ICreateFarmer {
   name: string;
   email: string;
   photoURL: string;
@@ -50,7 +50,7 @@ export interface ICreateFarmerApplication {
   about?: string;
 }
 
-export interface IUpdateFarmerApplication {
+export interface IUpdateFarmer {
   phone?: string;
   nid?: string;
 
@@ -60,17 +60,17 @@ export interface IUpdateFarmerApplication {
 
   experience?: string;
 
-  status?: TFarmerApplicationStatus;
+  status?: TFarmerStatus;
 }
 
-export interface IFarmerApplicationResponse {
+export interface IFarmerResponse {
   success: boolean;
   message: string;
-  data: IFarmerApplication;
+  data: IFarmer;
 }
 
-export interface IFarmerApplicationsResponse {
+export interface IFarmersResponse {
   success: boolean;
   message: string;
-  data: IFarmerApplication[];
+  data: IFarmer[];
 }

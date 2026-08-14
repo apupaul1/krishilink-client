@@ -2,14 +2,14 @@ import { Button, Card, Descriptions, Empty, Spin, Tag, Typography } from "antd";
 import { Link } from "react-router";
 
 import { useAppSelector } from "../../redux/hooks";
-import { useGetFarmerApplicationsQuery } from "../../redux/features/farmerApplication/farmerApplicationApi";
+import { useGetFarmersQuery } from "../../redux/features/farmer/farmerApi";
 
 const { Title } = Typography;
 
 const MyApplication = () => {
   const { user } = useAppSelector((state) => state.auth);
 
-  const { data, isLoading } = useGetFarmerApplicationsQuery({
+  const { data, isLoading } = useGetFarmersQuery({
     email: user?.email!,
   });
 

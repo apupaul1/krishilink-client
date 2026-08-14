@@ -5,6 +5,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ProductOutlined,
+  SettingOutlined,
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -38,18 +39,15 @@ const DashboardLayout = () => {
       icon: <AppstoreOutlined />,
       label: <Link to="/dashboard/my-orders">My Orders</Link>,
     },
-    {
+  ];
+
+  if (role !== "admin") {
+    menuItems.push({
       key: "/dashboard/my-application",
       icon: <UserOutlined />,
       label: <Link to="/dashboard/my-application">My Application</Link>,
-    },
-
-    // {
-    //   key: "/dashboard/settings",
-    //   icon: <SettingOutlined />,
-    //   label: <Link to="/dashboard/settings">Settings</Link>,
-    // },
-  ];
+    });
+  }
 
   if (role === "admin") {
     menuItems.push(
@@ -97,6 +95,20 @@ const DashboardLayout = () => {
       },
     );
   }
+
+  if (role === "rider") {
+    menuItems.push({
+      key: "/dashboard/delivery-order",
+      icon: <FileAddFilled />,
+      label: <Link to="/dashboard/delivery-order">Delivery Order</Link>,
+    });
+  }
+
+  menuItems.push({
+    key: "/dashboard/settings",
+    icon: <SettingOutlined />,
+    label: <Link to="/dashboard/settings">Settings</Link>,
+  });
 
   const sidebar = (
     <div className="flex h-full flex-col">

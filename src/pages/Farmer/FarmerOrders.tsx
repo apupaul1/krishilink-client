@@ -44,7 +44,7 @@ interface IFarmerOrder {
 
   orderStatus: string;
 
-  riderId: string | null;
+  riderEmail: string | null;
 
   createdAt: string;
   updatedAt: string;
@@ -98,8 +98,6 @@ const FarmerOrders = () => {
               <p className="font-medium">
                 {item.name} ( {item.quantity} {item.unit} )
               </p>
-
-              <p className=""></p>
             </div>
           ))}
         </div>

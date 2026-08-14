@@ -6,32 +6,33 @@ import Logo from "../Logo/Logo";
 import { Link } from "react-router";
 import { useAppSelector } from "../../../redux/hooks";
 import { logoutUser } from "../../../redux/features/auth/auth.service";
-
-export const items = [
-  {
-    key: "1",
-    icon: <User size={16} />,
-    label: "Profile",
-  },
-  {
-    key: "2",
-    icon: <LayoutDashboard size={16} />,
-    label: "Dashboard",
-  },
-  {
-    type: "divider" as const,
-  },
-  {
-    key: "3",
-    icon: <LogOut size={16} />,
-    label: "Logout",
-  },
-];
+import useRole from "../../../hooks/useRole";
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.cart.items);
+  const { role } = useRole();
 
+  const items = [
+    {
+      key: "1",
+      icon: <User size={16} />,
+      label: `${role?.toUpperCase()} Profile`,
+    },
+    {
+      key: "2",
+      icon: <LayoutDashboard size={16} />,
+      label: "Dashboard",
+    },
+    {
+      type: "divider" as const,
+    },
+    {
+      key: "3",
+      icon: <LogOut size={16} />,
+      label: "Logout",
+    },
+  ];
 
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
@@ -61,7 +62,7 @@ const Navbar = () => {
         <div className="hidden items-center gap-4 lg:flex">
           {user ? (
             <>
-              <Link to={'/cart'}>
+              <Link to={"/cart"}>
                 <Badge count={cartCount}>
                   <ShoppingCart className="cursor-pointer" />
                 </Badge>
@@ -73,7 +74,11 @@ const Navbar = () => {
                 }}
                 trigger={["click"]}
               >
-                <Avatar className="cursor-pointer bg-green-600">U</Avatar>
+                <Avatar
+                  size={45}
+                  src={user.photoURL}
+                  className="cursor-pointer bg-green-600"
+                ></Avatar>
               </Dropdown>
 
               <Button

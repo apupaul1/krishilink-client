@@ -3,6 +3,9 @@ export type TRiderStatus = "pending" | "approved" | "rejected";
 export interface IGetRiderQuery {
   email?: string;
   status?: string;
+  workStatus?: string;
+  district?: string;
+  area?: string;
 }
 
 export interface ICreateRider {
@@ -23,7 +26,6 @@ export interface IRider extends ICreateRider {
   createdAt: string;
   updatedAt: string;
 }
-
 
 export interface IUpdateRider {
   phone?: string;
