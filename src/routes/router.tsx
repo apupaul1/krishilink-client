@@ -33,6 +33,9 @@ import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
 import NotFound from "../pages/NotFound/NotFound";
 import Unauthorized from "../pages/Unauthorized/Unauthorized";
+import PaymentSuccess from "../pages/Payment/PaymentSuccess";
+import PaymentFail from "../pages/Payment/PaymentFail";
+import PaymentCancel from "../pages/Payment/PaymentCancel";
 
 export const router = createBrowserRouter([
   {
@@ -68,6 +71,19 @@ export const router = createBrowserRouter([
       {
         path: "contact",
         element: <Contact></Contact>,
+      },
+
+      {
+        path: "/payment/success",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "/payment/fail",
+        element: <PaymentFail />,
+      },
+      {
+        path: "/payment/cancel",
+        element: <PaymentCancel />,
       },
       {
         path: "/cart",

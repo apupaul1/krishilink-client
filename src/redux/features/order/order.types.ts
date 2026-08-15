@@ -19,11 +19,22 @@ export interface ICreateOrder {
 export interface IOrderResponse {
   success: boolean;
   message: string;
+
   data: {
-    _id: string;
-    totalAmount: number;
-    paymentMethod: string;
-    paymentStatus: string;
-    orderStatus: string;
+    orders: {
+      _id: string;
+      trackingId: string;
+      totalAmount: number;
+      paymentMethod: string;
+      paymentStatus: string;
+      orderStatus: string;
+    }[];
+
+    payment?: {
+      transactionId: string;
+      paymentId?: string;
+      amount: number;
+      gatewayPageURL: string;
+    };
   };
 }

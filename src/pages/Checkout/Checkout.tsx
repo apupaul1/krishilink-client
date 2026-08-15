@@ -5,6 +5,7 @@ import { useCreateOrderMutation } from "../../redux/features/order/orderApi";
 import { useEffect, useState } from "react";
 import { clearCart } from "../../redux/features/cart/cartSlice";
 import { getAreaOptions, getDistrictOptions } from "../../utils/location";
+// import { useInitiatePaymentMutation } from "../../redux/features/payment/paymentApi";
 
 export interface CheckoutFormValues {
   fullName: string;
@@ -19,6 +20,10 @@ export interface CheckoutFormValues {
 const Checkout = () => {
   const [form] = Form.useForm<CheckoutFormValues>();
   const selectedDistrict = Form.useWatch("district", form);
+  const paymentMethod = Form.useWatch("paymentMethod", form);
+
+  // const [initiatePayment, { isLoading: isPaymentLoading }] =
+  //   useInitiatePaymentMutation();
 
   const [createOrder, { isLoading }] = useCreateOrderMutation();
 
@@ -58,7 +63,6 @@ const Checkout = () => {
         note: values.note,
       };
 
-      // Save address for next checkout
       localStorage.setItem(
         "krishilink_shipping_address",
         JSON.stringify(shippingAddress),
@@ -75,11 +79,28 @@ const Checkout = () => {
         paymentMethod: values.paymentMethod,
       }).unwrap();
 
-      console.log(result);
+      // -----------------------------
+      // SSLCommerz
+      // -----------------------------
+
+      if (values.paymentMethod === "sslcommerz") {
+        const gatewayPageURL = result.data.payment?.gatewayPageURL;
+
+        if (!gatewayPageURL) {
+          throw new Error("Payment gateway URL not found.");
+        }
+
+        window.location.href = gatewayPageURL;
+
+        return;
+      }
+
+      // -----------------------------
+      // COD
+      // -----------------------------
 
       message.success("Order placed successfully!");
 
-      // Cart clear এখানে করবে
       dispatch(clearCart());
 
       navigate("/dashboard/my-orders");
@@ -90,14 +111,13 @@ const Checkout = () => {
     }
   };
 
-
   // const cartItems = useAppSelector((state) => state.cart.items);
 
   // const selectedItems = cartItems.filter((item) => item.isSelected);
 
   const checkoutItems = useAppSelector((state) => state.cart.checkoutItems);
 
-  console.log(checkoutItems);
+  // console.log(checkoutItems);
 
   const subtotal = checkoutItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -319,9 +339,7 @@ const Checkout = () => {
                 <Radio.Group className="flex flex-col gap-4">
                   <Radio value="cod">Cash on Delivery</Radio>
 
-                  <Radio value="sslcommerz" disabled>
-                    SSLCommerz (Coming Soon)
-                  </Radio>
+                  <Radio value="sslcommerz">SSLCommerz</Radio>
                 </Radio.Group>
               </Form.Item>
             </Form>
@@ -401,7 +419,9 @@ const Checkout = () => {
               className="mt-8 w-full"
               loading={isLoading}
             >
-              Place Order
+              {paymentMethod === "sslcommerz"
+                ? "Proceed to Payment"
+                : "Place Order"}
             </Button>
           </div>
         </div>
