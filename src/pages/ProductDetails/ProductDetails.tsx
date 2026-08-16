@@ -17,30 +17,33 @@ import {
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useState } from "react";
-import { useAppDispatch } from "../../redux/hooks";
-import {
-  addToCart,
-  setCheckoutItems,
-} from "../../redux/features/cart/cartSlice";
-import { mapProductToCartItem } from "../../utils/cart";
+import { useAppSelector } from "../../redux/hooks";
 import Loading from "../../components/shared/Loading/Loading";
+import {
+  useAddToCartMutation,
+  useBuyNowMutation,
+} from "../../redux/features/cart/cartApi";
 
 const ProductDetails = () => {
+  const { user } = useAppSelector((state) => state.auth);
+
   const { id } = useParams();
 
   const navigate = useNavigate();
 
   const [quantity, setQuantity] = useState(1);
 
-  const dispatch = useAppDispatch();
-
   if (!id) {
     return <p>Invalid Product ID</p>;
   }
 
   const { data, isLoading, error } = useGetSingleProductQuery(id);
+
+  const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
+
+  const [buyNow, { isLoading: isBuyingNow }] = useBuyNowMutation();
 
   console.log(data);
 
@@ -68,22 +71,49 @@ const ProductDetails = () => {
 
   const totalPrice = product.price * quantity;
 
-  const handleAddToCart = () => {
-    const cartItem = mapProductToCartItem(product, quantity);
+  const handleAddToCart = async () => {
+    try {
+      if (!user?.email) {
+        message.warning("Please login first.");
+        return;
+      }
 
-    dispatch(addToCart(cartItem));
+      await addToCart({
+        productId: product._id,
+        quantity,
+      }).unwrap();
+
+      message.success("Product added to cart!");
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to add product to cart.");
+    }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!product.isAvailable || product.stock === 0) {
       return;
     }
 
-    const cartItem = mapProductToCartItem(product, quantity);
+    if (!user?.email) {
+      message.warning("Please login first.");
+      return;
+    }
 
-    dispatch(setCheckoutItems([cartItem]));
+    try {
+      await buyNow({
+        email: user.email,
+        productId: product._id,
+        quantity,
+      }).unwrap();
 
-    navigate("/checkout");
+      navigate(`/checkout?buyNow=${product._id}`);
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to proceed to checkout.");
+    }
   };
 
   return (
@@ -264,6 +294,7 @@ const ProductDetails = () => {
               <Button
                 type="primary"
                 className="w-full p-5!"
+                loading={isAdding}
                 onClick={handleAddToCart}
                 disabled={!product.isAvailable}
               >
@@ -275,6 +306,7 @@ const ProductDetails = () => {
                 type="default"
                 className="w-full p-5!"
                 // disabled={!product.isAvailable}
+                loading={isBuyingNow}
                 onClick={handleBuyNow}
               >
                 Buy Now

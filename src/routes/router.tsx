@@ -36,6 +36,7 @@ import Unauthorized from "../pages/Unauthorized/Unauthorized";
 import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 import PaymentFail from "../pages/Payment/PaymentFail";
 import PaymentCancel from "../pages/Payment/PaymentCancel";
+import PaymentHistory from "../pages/PaymentHistory/PaymentHistory";
 
 export const router = createBrowserRouter([
   {
@@ -166,8 +167,12 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "my-application",
-        element: <MyApplication />,
+        path: "farmer-application",
+        element: (
+          <PrivateRoute>
+            <MyApplication />
+          </PrivateRoute>
+        ),
       },
       {
         path: "rider-application",
@@ -195,6 +200,11 @@ export const router = createBrowserRouter([
       {
         path: "pending-farmer-orders",
         element: <FarmerOrders></FarmerOrders>,
+      },
+
+      {
+        path: "payments-history",
+        element: <PaymentHistory></PaymentHistory>,
       },
 
       {

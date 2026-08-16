@@ -85,6 +85,9 @@ const AdminOrders = () => {
 
   const [assignRider, { isLoading: isAssigning }] = useAssignRiderMutation();
 
+
+  console.log(riderData);
+
   const handleAssignRider = async (orderId: string, riderEmail: string) => {
     try {
       await assignRider({

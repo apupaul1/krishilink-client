@@ -9,7 +9,7 @@ export const orderApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Order"],
+      invalidatesTags: ["Order", "Product"],
     }),
 
     getAllOrders: build.query({
@@ -17,7 +17,7 @@ export const orderApi = baseApi.injectEndpoints({
         url: "/orders",
         params,
       }),
-      providesTags: ["Order"],
+      providesTags: ["Order", "Rider"],
     }),
 
     assignRider: build.mutation({
@@ -35,7 +35,7 @@ export const orderApi = baseApi.injectEndpoints({
         },
       }),
 
-      invalidatesTags: ["Order"],
+      invalidatesTags: ["Order", "Rider"],
     }),
 
     updateOrderStatus: build.mutation({
@@ -47,7 +47,7 @@ export const orderApi = baseApi.injectEndpoints({
         },
       }),
 
-      invalidatesTags: ["Order"],
+      invalidatesTags: ["Order", "Product"],
     }),
 
     rejectRider: build.mutation({

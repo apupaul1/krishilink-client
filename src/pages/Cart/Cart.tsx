@@ -1,27 +1,41 @@
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppSelector } from "../../redux/hooks";
 import { Button, Checkbox, Empty, message } from "antd";
 import { Link, useNavigate } from "react-router";
-import {
-  decreaseQuantity,
-  increaseQuantity,
-  removeFromCart,
-  setCheckoutItems,
-  toggleSelectAll,
-  toggleSelection,
-} from "../../redux/features/cart/cartSlice";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import {
+  useGetCartQuery,
+  useRemoveFromCartMutation,
+  useToggleSelectAllMutation,
+  useToggleSelectionMutation,
+  useUpdateQuantityMutation,
+} from "../../redux/features/cart/cartApi";
+import Loading from "../../components/shared/Loading/Loading";
+import type { ICartItem } from "../../redux/features/cart/cart.types";
 
 const Cart = () => {
-  const cartItems = useAppSelector((state) => state.cart.items);
+  const { user } = useAppSelector((state) => state.auth);
 
-  console.log(cartItems);
+  const { data, isLoading, isError } = useGetCartQuery(user?.email ?? "", {
+    skip: !user?.email,
+  });
 
-  const dispatch = useAppDispatch();
+  const [updateQuantity, { isLoading: isUpdating }] =
+    useUpdateQuantityMutation();
+
+  const [toggleSelection, { isLoading: isTogglingSelection }] =
+    useToggleSelectionMutation();
+
+  const [toggleSelectAll] = useToggleSelectAllMutation();
+
+  const [removeFromCart, { isLoading: isRemoving }] =
+    useRemoveFromCartMutation();
+
+  const cartItems = data?.data?.items ?? [];
 
   const selectedItems = cartItems.filter((item) => item.isSelected);
 
   const subtotal = selectedItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (total, item) => total + item.price * item.quantity,
     0,
   );
 
@@ -50,17 +64,111 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const handleCheckout = () => {
-    const selectedItems = cartItems.filter((item) => item.isSelected);
-
     if (selectedItems.length === 0) {
       message.warning("Please select at least one product.");
+
       return;
     }
 
-    dispatch(setCheckoutItems(selectedItems));
-
     navigate("/checkout");
   };
+
+  const handleIncrease = async (item: ICartItem) => {
+    if (item.quantity >= item.stock) {
+      message.warning("Maximum available stock reached.");
+      return;
+    }
+
+    try {
+      await updateQuantity({
+        email: user?.email ?? "",
+        productId: item.productId,
+        quantity: item.quantity + 1,
+      }).unwrap();
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to update quantity.");
+    }
+  };
+
+  const handleDecrease = async (item: ICartItem) => {
+    if (item.quantity <= 1) {
+      return;
+    }
+
+    try {
+      await updateQuantity({
+        email: user?.email ?? "",
+        productId: item.productId,
+        quantity: item.quantity - 1,
+      }).unwrap();
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to update quantity.");
+    }
+  };
+
+  const handleToggleSelection = async (productId: string) => {
+    try {
+      await toggleSelection({
+        email: user?.email ?? "",
+        productId,
+      }).unwrap();
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to update selection.");
+    }
+  };
+
+  const handleSelectAll = async () => {
+    if (!user?.email) {
+      return;
+    }
+
+    try {
+      await toggleSelectAll({
+        email: user.email,
+      }).unwrap();
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to update cart selection.");
+    }
+  };
+
+  const handleRemoveFromCart = async (productId: string) => {
+    if (!user?.email) {
+      return;
+    }
+
+    try {
+      await removeFromCart({
+        email: user.email,
+        productId,
+      }).unwrap();
+
+      message.success("Product removed from cart.");
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to remove product.");
+    }
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return (
+      <div className="py-20 text-center">
+        <p className="text-red-500">Failed to load cart.</p>
+      </div>
+    );
+  }
 
   if (!cartItems.length) {
     return (
@@ -87,7 +195,7 @@ const Cart = () => {
           <Checkbox
             className="text-md!"
             checked={allSelected}
-            onChange={() => dispatch(toggleSelectAll())}
+            onChange={handleSelectAll}
           >
             Select All ({selectedCount}/{cartItems.length} selected)
           </Checkbox>
@@ -104,7 +212,8 @@ const Cart = () => {
                 <div className="flex flex-col gap-6 md:flex-row md:items-center">
                   <Checkbox
                     checked={item.isSelected}
-                    onChange={() => dispatch(toggleSelection(item.productId))}
+                    disabled={isTogglingSelection}
+                    onChange={() => handleToggleSelection(item.productId)}
                   />
                   {/* Product Image */}
                   <div className="h-28 w-28 overflow-hidden rounded-xl border border-gray-200">
@@ -129,8 +238,8 @@ const Cart = () => {
                   {/* Quantity */}
                   <div className="flex items-center overflow-hidden rounded-xl border border-gray-200">
                     <button
-                      onClick={() => dispatch(decreaseQuantity(item.productId))}
-                      disabled={item.quantity === 1}
+                      onClick={() => handleDecrease(item)}
+                      disabled={item.quantity <= 1 || isUpdating}
                       className="flex h-10 w-10 items-center justify-center transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <Minus size={16} />
@@ -141,8 +250,8 @@ const Cart = () => {
                     </span>
 
                     <button
-                      onClick={() => dispatch(increaseQuantity(item.productId))}
-                      disabled={item.quantity >= item.stock}
+                      onClick={() => handleIncrease(item)}
+                      disabled={item.quantity >= item.stock || isUpdating}
                       className="flex h-10 w-10 items-center justify-center transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <Plus size={16} />
@@ -162,8 +271,9 @@ const Cart = () => {
                   <Button
                     danger
                     type="text"
+                    loading={isRemoving}
                     icon={<Trash2 size={18} />}
-                    onClick={() => dispatch(removeFromCart(item.productId))}
+                    onClick={() => handleRemoveFromCart(item.productId)}
                   >
                     Remove
                   </Button>
@@ -191,9 +301,7 @@ const Cart = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500">Delivery Charge</span>
 
-                  <span className="font-medium">
-                    ৳ {deliveryCharge}
-                  </span>
+                  <span className="font-medium">৳ {deliveryCharge}</span>
                 </div>
 
                 <hr className="border-gray-200" />

@@ -1,31 +1,16 @@
 import { baseApi } from "../../baseApi";
-
-interface IInitiatePaymentResponse {
-  success: boolean;
-
-  data: {
-    transactionId: string;
-    paymentId: string;
-    amount: number;
-    gatewayPageURL: string;
-  };
-}
+// import type { IPaymentHistoryResponse } from "./payment.types";
 
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    initiatePayment: build.mutation<
-      IInitiatePaymentResponse,
-      {
-        orderIds: string[];
-      }
-    >({
-      query: (body) => ({
-        url: "/payments/initiate",
-        method: "POST",
-        body,
+
+    getAllPayments: build.query({
+      query: (params) => ({
+        url: "/payments",
+        params
       }),
     }),
   }),
 });
 
-export const { useInitiatePaymentMutation } = paymentApi;
+export const {useGetAllPaymentsQuery } = paymentApi;

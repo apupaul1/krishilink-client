@@ -1,5 +1,10 @@
 import { baseApi } from "../../baseApi";
-import type { ICreateProduct, IProduct, IProductResponse, IProductsResponse } from "./product.types";
+import type {
+  ICreateProduct,
+  IProduct,
+  IProductResponse,
+  IProductsResponse,
+} from "./product.types";
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -22,6 +27,7 @@ export const productApi = baseApi.injectEndpoints({
       query: (id: string) => ({
         url: `/products/${id}`,
       }),
+      providesTags: ["Product"],
     }),
 
     createProduct: build.mutation<IProductResponse, ICreateProduct>({

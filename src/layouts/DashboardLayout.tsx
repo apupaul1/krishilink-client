@@ -1,5 +1,6 @@
 import {
   AppstoreOutlined,
+  CreditCardOutlined,
   DashboardOutlined,
   FileAddFilled,
   MenuFoldOutlined,
@@ -9,11 +10,12 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Drawer, Layout, Menu, Typography } from "antd";
+import { Avatar, Button, Drawer, Layout, Menu, message, Typography } from "antd";
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
 import { useAppSelector } from "../redux/hooks";
 import useRole from "../hooks/useRole";
+import { logoutUser } from "../redux/features/auth/auth.service";
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -39,21 +41,26 @@ const DashboardLayout = () => {
       icon: <AppstoreOutlined />,
       label: <Link to="/dashboard/my-orders">My Orders</Link>,
     },
+    {
+      key: "/dashboard/payments-history",
+      icon: <CreditCardOutlined />,
+      label: <Link to="/dashboard/payments-history">Payment History</Link>,
+    },
   ];
 
   if (role !== "admin" && role !== "farmer") {
     menuItems.push({
-      key: "/dashboard/my-application",
+      key: "/dashboard/rider-application",
       icon: <UserOutlined />,
-      label: <Link to="/dashboard/rider-application">My Application</Link>,
+      label: <Link to="/dashboard/rider-application">Rider Application</Link>,
     });
   }
 
   if (role !== "admin" && role !== "rider") {
     menuItems.push({
-      key: "/dashboard/my-application",
+      key: "/dashboard/farmer-application",
       icon: <UserOutlined />,
-      label: <Link to="/dashboard/my-application">My Application</Link>,
+      label: <Link to="/dashboard/farmer-application">Farmer Application</Link>,
     });
   }
 
@@ -118,6 +125,17 @@ const DashboardLayout = () => {
     label: <Link to="/dashboard/settings">Settings</Link>,
   });
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+
+      message.success("Logged out successfully.");
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to logout.");
+    }
+  };
+
   const sidebar = (
     <div className="flex h-full flex-col">
       {/* Logo */}
@@ -152,6 +170,13 @@ const DashboardLayout = () => {
             </div>
           )}
         </div>
+        <Button
+          onClick={() => handleLogout()}
+          className="w-full mt-2"
+          type="primary"
+        >
+          Logout
+        </Button>
       </div>
     </div>
   );
@@ -177,7 +202,7 @@ const DashboardLayout = () => {
         placement="left"
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
-        width={250}
+        size={250}
         closable={false}
         styles={{
           body: {

@@ -148,7 +148,7 @@ const RiderOrders = () => {
     {
       title: "Delivery",
       key: "delivery",
-      width: 200,
+      width: 140,
       render: (_, record) => (
         <div>
           <p className="text-sm font-medium">
@@ -165,7 +165,7 @@ const RiderOrders = () => {
     {
       title: "Products",
       dataIndex: "items",
-      width: 220,
+      width: 140,
       render: (items: IRiderOrder["items"]) => (
         <div className="space-y-1">
           {items.map((item) => (
@@ -192,7 +192,7 @@ const RiderOrders = () => {
     {
       title: "Status",
       dataIndex: "orderStatus",
-      width: 180,
+      width: 220,
       render: (status: string) => (
         <Tag color={statusColor[status] || "default"}>
           {status.replaceAll("_", " ").toUpperCase()}
@@ -204,7 +204,7 @@ const RiderOrders = () => {
       title: "Action",
       key: "action",
       fixed: "right",
-      width: 160,
+      width: 260,
       render: (_, record) => {
         if (record.orderStatus === "waiting_for_rider_acceptance") {
           return (
@@ -267,19 +267,34 @@ const RiderOrders = () => {
 
         if (record.orderStatus === "out_for_delivery") {
           return (
-            <Button
-              type="primary"
-              size="small"
-              loading={isUpdating}
-              onClick={() => handleStatusUpdate(record._id, "delivered")}
-            >
-              Delivered
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                type="primary"
+                size="small"
+                loading={isUpdating}
+                onClick={() => handleStatusUpdate(record._id, "delivered")}
+              >
+                Delivered
+              </Button>
+
+              <Button
+                type="primary"
+                size="small"
+                loading={isUpdating}
+                onClick={() => handleStatusUpdate(record._id, "cancelled")}
+              >
+                Cancelled
+              </Button>
+            </div>
           );
         }
 
         if (record.orderStatus === "delivered") {
           return <Tag color="green">Completed</Tag>;
+        }
+
+        if (record.orderStatus === "cancelled") {
+          return <Tag color="red">Cancelled</Tag>;
         }
 
         return null;

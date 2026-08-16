@@ -1,10 +1,8 @@
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { Eye, ShoppingCart } from "lucide-react";
 import type { IProduct } from "../../redux/features/product/product.types";
 import { Link } from "react-router";
-import { useAppDispatch } from "../../redux/hooks";
-import { addToCart } from "../../redux/features/cart/cartSlice";
-import { mapProductToCartItem } from "../../utils/cart";
+import { useAddToCartMutation } from "../../redux/features/cart/cartApi";
 
 interface ProductCardProps {
   product: IProduct;
@@ -13,12 +11,21 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { name, category, price, unit, images, farmer, isAvailable } = product;
 
-  console.log(product);
+  const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
 
-  const dispatch = useAppDispatch();
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({
+        productId: product._id,
+        quantity: 1,
+      }).unwrap();
 
-  const handleAddToCart = () => {
-    dispatch(addToCart(mapProductToCartItem(product)));
+      message.success("Product added to cart!");
+    } catch (error) {
+      console.error(error);
+
+      message.error("Failed to add product to cart.");
+    }
   };
 
   return (
@@ -141,6 +148,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             type="primary"
             size="large"
             icon={<ShoppingCart size={18} />}
+            loading={isAdding}
             onClick={handleAddToCart}
           >
             Add to Cart

@@ -7,10 +7,19 @@ import { Link } from "react-router";
 import { useAppSelector } from "../../../redux/hooks";
 import { logoutUser } from "../../../redux/features/auth/auth.service";
 import useRole from "../../../hooks/useRole";
+import { useGetCartQuery } from "../../../redux/features/cart/cartApi";
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
-  const cartItems = useAppSelector((state) => state.cart.items);
+
+  const { data: cartData } = useGetCartQuery(user?.email ?? "", {
+    skip: !user?.email,
+  });
+
+  const cartItems = cartData?.data?.items ?? [];
+
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   const { role } = useRole();
 
   const items = [
@@ -33,8 +42,6 @@ const Navbar = () => {
       label: "Logout",
     },
   ];
-
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogout = async () => {
     try {

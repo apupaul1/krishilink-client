@@ -7,10 +7,8 @@ import {
   EnvironmentOutlined,
   StarFilled,
 } from "@ant-design/icons";
-import { useAppDispatch } from "../../../redux/hooks";
-import { mapProductToCartItem } from "../../../utils/cart";
-import { addToCart } from "../../../redux/features/cart/cartSlice";
 import type { IProduct } from "../../../redux/features/product/product.types";
+import { useAddToCartMutation } from "../../../redux/features/cart/cartApi";
 
 interface ProductCardProps {
   product: IProduct;
@@ -18,15 +16,21 @@ interface ProductCardProps {
 
 const FeaturedProductCard = ({ product }: ProductCardProps) => {
 
+  const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
 
-  const dispatch = useAppDispatch();
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({
+        productId: product._id,
+        quantity: 1,
+      }).unwrap();
 
-  const handleAddToCart = () => {
-    const cartItem = mapProductToCartItem(product);
+      message.success("Product added to cart!");
+    } catch (error) {
+      console.error(error);
 
-    dispatch(addToCart(cartItem));
-
-    message.success("Added to cart");
+      message.error("Failed to add product to cart.");
+    }
   };
 
   return (
@@ -93,6 +97,7 @@ const FeaturedProductCard = ({ product }: ProductCardProps) => {
           type="primary"
           size="large"
           block
+          loading={isAdding}
           icon={<ShoppingCartOutlined />}
           disabled={!product.isAvailable}
           onClick={handleAddToCart}

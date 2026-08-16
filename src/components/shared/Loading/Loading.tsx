@@ -3,13 +3,13 @@ import { Spin } from "antd";
 interface LoadingProps {
   fullScreen?: boolean;
   size?: "small" | "default" | "large";
-  tip?: string;
+  description?: string;
 }
 
 const Loading = ({
   fullScreen = false,
   size = "large",
-  tip = "Loading...",
+  description = "Loading...",
 }: LoadingProps) => {
   return (
     <div
@@ -19,7 +19,7 @@ const Loading = ({
           : "flex min-h-75 items-center justify-center"
       }
     >
-      <Spin size={size} tip={tip} />
+      <Spin size={size} description={description} />
     </div>
   );
 };

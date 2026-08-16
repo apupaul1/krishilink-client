@@ -1,25 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { ICartItem } from "./cart.types";
 
-export interface ICartItem {
-  productId: string;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-  unit: string;
-  stock: number;
-
-  farmerEmail: string;
-  baseDeliveryCharge: number;
-
-  location: {
-    district: string;
-    area: string;
-    address: string
-  }
-
-  isSelected?: boolean;
-}
 
 interface CartState {
   items: ICartItem[];

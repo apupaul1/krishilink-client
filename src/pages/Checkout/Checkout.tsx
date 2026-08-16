@@ -1,11 +1,14 @@
 import { Button, Empty, Form, Input, message, Radio, Select } from "antd";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { Link, useNavigate } from "react-router";
+import { useAppSelector } from "../../redux/hooks";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useCreateOrderMutation } from "../../redux/features/order/orderApi";
 import { useEffect, useState } from "react";
-import { clearCart } from "../../redux/features/cart/cartSlice";
 import { getAreaOptions, getDistrictOptions } from "../../utils/location";
-// import { useInitiatePaymentMutation } from "../../redux/features/payment/paymentApi";
+import {
+  useGetCartQuery,
+  useRemoveCartItemsMutation,
+} from "../../redux/features/cart/cartApi";
+import Loading from "../../components/shared/Loading/Loading";
 
 export interface CheckoutFormValues {
   fullName: string;
@@ -18,16 +21,37 @@ export interface CheckoutFormValues {
 }
 
 const Checkout = () => {
+  const { user } = useAppSelector((state) => state.auth);
+
+  const [searchParams] = useSearchParams();
+
+  const buyNowProductId = searchParams.get("buyNow");
+
+  const {
+    data: cartData,
+    isLoading: isCartLoading,
+    isError: isCartError,
+  } = useGetCartQuery(user?.email ?? "", {
+    skip: !user?.email,
+  });
+
+  const cartItems = cartData?.data?.items ?? [];
+
+  const checkoutItems = buyNowProductId
+    ? cartItems.filter((item) => item.productId === buyNowProductId)
+    : cartItems.filter((item) => item.isSelected);
+
+  const [removeCartItems, { isLoading: isRemovingCartItems }] =
+    useRemoveCartItemsMutation();
+
+  // const checkoutItems =
+  //   cartData?.data?.items.filter((item) => item.isSelected) ?? [];
+
   const [form] = Form.useForm<CheckoutFormValues>();
   const selectedDistrict = Form.useWatch("district", form);
   const paymentMethod = Form.useWatch("paymentMethod", form);
 
-  // const [initiatePayment, { isLoading: isPaymentLoading }] =
-  //   useInitiatePaymentMutation();
-
   const [createOrder, { isLoading }] = useCreateOrderMutation();
-
-  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
@@ -99,9 +123,12 @@ const Checkout = () => {
       // COD
       // -----------------------------
 
-      message.success("Order placed successfully!");
+      await removeCartItems({
+        email: user!.email,
+        productIds: checkoutItems.map((item) => item.productId),
+      }).unwrap();
 
-      dispatch(clearCart());
+      message.success("Order placed successfully!");
 
       navigate("/dashboard/my-orders");
     } catch (error) {
@@ -110,14 +137,6 @@ const Checkout = () => {
       message.error("Failed to place order. Please try again.");
     }
   };
-
-  // const cartItems = useAppSelector((state) => state.cart.items);
-
-  // const selectedItems = cartItems.filter((item) => item.isSelected);
-
-  const checkoutItems = useAppSelector((state) => state.cart.checkoutItems);
-
-  // console.log(checkoutItems);
 
   const subtotal = checkoutItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -179,6 +198,18 @@ const Checkout = () => {
   );
 
   const total = subtotal + deliveryCharge;
+
+  if (isCartLoading) {
+    return <Loading />;
+  }
+
+  if (isCartError) {
+    return (
+      <div className="py-20 text-center">
+        <p className="text-red-500">Failed to load cart.</p>
+      </div>
+    );
+  }
 
   if (checkoutItems.length === 0) {
     return (
